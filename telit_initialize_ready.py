@@ -39,3 +39,13 @@ sleep(5)
 node.sendATComm("AT#FWAUTOSIM=1","OK")
 sleep(5)
 
+# allows to update the PLMN from the following list
+node.sendATComm("AT#PLMNMODE=2","OK")
+sleep(10)
+
+# add Amarisoft to the list
+node.sendATComm("AT#PLMNUPDATE=1,001,01,\"Amarisoft\"","OK")
+sleep(10)
+
+# reboot 
+node.sendATComm("AT#REBOOT","OK")
