@@ -194,7 +194,7 @@ def main():
     raspb_pi_update_values()
     battery_update_values()
 
-iot_is_used = False
+iot_is_used = True
 sensor_data = dict()
 node = IoTMqtt()
 node.setupGPIO()

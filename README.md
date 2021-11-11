@@ -63,7 +63,7 @@ Step(1 - Telit):
 git clone https://github.com/ramymohamed-sudo/Telit.git 
 <br />
 Step(2):
-cd Telit/Telit/
+cd Telit/
 <br />
 Step(3):
 sudo python3 setup.py install
@@ -71,7 +71,7 @@ sudo python3 setup.py install
 Step(4):
 Either run the telit_initialize.py file to start the module
 <br />
-python3 telit_initialize.py
+python3 telit_initialize_ready.py
 <br />
 <br />
 or run the following commands in python
