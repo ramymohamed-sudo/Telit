@@ -2,6 +2,9 @@
 
 """ Telit ME910C1-WW 
 https://y1cj3stn5fbwhv73k0ipk1eg-wpengine.netdna-ssl.com/wp-content/uploads/2019/06/Telit_ME910C1_NE910C1_ML865C1_AT_Commands_Reference_Guide_r11.pdf
+
+https://www.telit.com/wp-content/uploads/2018/10/Telit_ME910C1_NE910C1_ML865C1_AT_Commands_Reference_Guide_r4.pdf
+
 """
 
 import IoTSixfabTelit
@@ -34,8 +37,8 @@ node.sendATComm("AT#MQCFG2?","OK")
 
 
 # - Configure MQTT   AT#MQCFG=<instanceNumber>,<hostname>,<port>,<cid>
-node.sendATComm("AT#MQCFG=1,\"9.161.154.25\",1883,1","OK")  # cid 1-6
-node.sendATComm("AT#MQCFG=2,\"9.161.154.25\",1883,2","OK")  # cid 1-6
+node.sendATComm("AT#MQCFG=1,\"9.162.161.90\",1883,1","OK")  # cid 1-6
+node.sendATComm("AT#MQCFG=2,\"9.162.161.90\",1883,2","OK")  # cid 1-6
 # check the current configuration, e.g., hostname, port number, etc
 node.sendATComm("AT#MQCFG?","OK") 
 # AT#MQCFG?
@@ -80,7 +83,48 @@ node.sendATComm("AT#MQSUB=1,\"5G-Solutions\"","OK")
 node.sendATComm("AT#MQSUB=2,\"5G-Solutions\"","OK")
 
 
+node.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,\"Hello\""+node.CTRL_Z,"OK")
+
 """ ___________________ PDP Context Activation ____________________________ """
+# Read command returns the current socket configuration parameters values for all the six sockets
+node.sendATComm("AT#SCFG?","OK")
+
+# Read command returns the current value of <mode>, the registration status <stat>
+node.sendATComm("AT+CREG?","OK")    # returns 0,1 if registered
+# AT+CEREG=[<mode>]
+node.sendATComm("AT+CREG=1","OK")  # enable the network registration unsolicited result code
+node.sendATComm("AT+CREG?","OK")    # now returns 1,1 if registered
+
+# AT+CEREG=[<mode>] ; mode=1 enable the network registration unsolicited result code
+node.sendATComm("AT+CEREG?","OK")       # returns <mode>, <EPS registration status stat>
+node.sendATComm("AT+CEREG=1","OK")
+node.sendATComm("AT+CEREG?","OK") 
+
+
+node.sendATComm("AT+CGREG?","OK")      # AT+CGREG - GPRS Network Registration Status
+node.sendATComm("AT+CGREG=1","OK")
+node.sendATComm("AT+CGREG?","OK")       # returns <mode>, the registration status <stat>
+
+
+# AT+CGDCONT - Define PDP Context
+node.sendATComm("AT+CGDCONT?","OK")     # returns 6 rows for context 1 to context 6
+# check REG commands, 1,5 => 5 for HSUPA not LTE
+# get CID address
+node.sendATComm("AT+CGPADDR=1","OK")    # +CGPADDR: 1, "192.168.2.6"
+# AT+CGDCONT=[<cid>[,<PDP_type>[,<APN>[,<PDP_addr>
+# AT+CGDCONT=1,\"IP\",\"default\",\"192.168.2.6\",0,0
+node.sendATComm("AT+CGDCONT=1,\"IP\",\"default\",\"192.168.2.6\",0,0","OK")
+node.sendATComm("AT+CGDCONT?","OK")     # the first row is:1, "IP", "default", "192.168.2.6", 0,0,0,0
+# Read command returns the current activation state for all the defined PDP contexts in the format:
+node.sendATComm("AT+CGACT?","OK")   # CGACT:1,1     rest are 0s
+
+# page 338 - recall this is multiple time for context activation
+node.sendATComm("AT#SGACT?","OK")   # IPEasy Context Activation
+node.sendATComm("AT#SGACT=1,1","OK")
+
+
+""" ___________________ PDP Context Activation ____________________________ """
+
 
 # DNS resolve example
 # AT#QDNS[=<host name>]
@@ -93,41 +137,20 @@ node.sendATComm("AT#SD=1,0,80,\"142.250.102.99\",0,0,1,","OK")
 # node.sendATComm("","OK")
 
 
-Read command returns the current socket configuration parameters values for all the six sockets
-node.sendATComm("AT#SCFG?","OK")
 
 
-# node.sendATComm("","OK")
-node.sendATComm("AT+CREG?","OK")
+
 node.sendATComm("AT#RFSTS=?","OK")
-node.sendATComm("AT+CEREG?","OK")
-# AT+CEREG=[<mode>]
-node.sendATComm("AT+CEREG=1","OK")
-node.sendATComm("AT+CEREG?","OK")
-node.sendATComm("AT+CGREG?","OK")
-node.sendATComm("AT+CGREG=1","OK")
-
-node.sendATComm("AT+CGDCONT?","OK")
-# check REG commands, 1,5 => 5 for HSUPA not LTE
 
 
-# CID 
-node.sendATComm("AT+CGPADDR=1","OK")
-# +CGPADDR: 1, "192.168.2.10"
-
-# AT+CGDCONT=[<cid>[,<PDP_type>[,<APN>[,<PDP_addr>
-# AT+CGDCONT=1,"IP","APN","10.10.10.10",0,0
-# AT+CGDCONT=1,\"IP\",\"default\",\"192.168.2.10\",0,0
-node.sendATComm("AT+CGDCONT=1,\"IP\",\"default\",\"192.168.2.10\",0,0","OK")
-
-# Read command returns the current activation state for all the defined PDP contexts in the format:
-# AT+CGACT?
-node.sendATComm("AT+CGACT?","OK")
 
 
-# page 338 - recall this is second time for context activation
-node.sendATComm("AT#SGACT?","OK")
-node.sendATComm("AT#SGACT=1,1","OK")
+
+
+
+
+
+
 
 
 # Read command returns the current socket configuration parameters values for all the six sockets,

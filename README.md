@@ -60,7 +60,7 @@ pip3 install paho-mqtt python-etcd
 
 Step(1 - Telit):
 # git clone --branch development https://github.com/ramymohamed-sudo/5G-Solutions.git Telit 
-git clone https://github.com/ramymohamed-sudo/Telit.git 
+git clone https://github.com/ramymohamed-sudo/Telit-and-BG96.git 
 <br />
 Step(2):
 cd Telit/

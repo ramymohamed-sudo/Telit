@@ -101,6 +101,63 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         if not search('1,1', self.node_mqtt_check_enable):      # 1,1 and 2,1??
             print("Enable MQTT feature as it not enabled")
             self.sendATComm("AT#MQEN=1,1","OK")
+        
+    
+    def pdp_context_check_and_enable(self):
+        # Read command returns the current socket configuration parameters values for all the six sockets
+        print("get the current socket configuration parameters values for all the six sockets")
+        node.sendATComm("AT#SCFG?","OK")
+        sleep(5)
+
+        # Read command returns the current value of <mode>, the registration status <stat>
+        self.reg_mode_stat = node.sendATComm("AT+CREG?","OK")    # returns 0,1 if mode-disable, registered
+        if not search('1,1', self.reg_mode_stat):
+            # AT+CEREG=[<mode>]
+            node.sendATComm("AT+CREG=1","OK")  # enable the network registration unsolicited result code
+            sleep(5)
+            self.reg_mode_stat = node.sendATComm("AT+CREG?","OK") 
+        
+        if search('1,1', self.reg_mode_stat):
+            # AT+CEREG=[<mode>] ; mode=1 enable the network registration unsolicited result code
+            self.eps_reg_mode = node.sendATComm("AT+CEREG?","OK")     # returns <mode>, <EPS registration status stat>
+            if not search('1,1', self.eps_reg_mode):
+                node.sendATComm("AT+CEREG=1","OK")
+                sleep(5)
+                self.eps_reg_mode = node.sendATComm("AT+CEREG?","OK")
+        
+        if search('1,1', self.eps_reg_mode):
+            self.gprs_reg_mode = node.sendATComm("AT+CGREG?","OK")      # AT+CGREG - GPRS Network Registration Status
+            if not search('1,1', self.gprs_reg_mode):
+                sleep(5)
+                node.sendATComm("AT+CGREG=1","OK")
+                self.gprs_reg_mode = node.sendATComm("AT+CGREG?","OK") 
+
+        if search('1,1', self.gprs_reg_mode):
+            # AT+CGDCONT - Define PDP Context
+            node.sendATComm("AT+CGDCONT?","OK")     # returns 6 rows for context 1 to context 6
+            sleep(5)
+            """ check REG commands, 1,5 => 5 for HSUPA not LTE  """
+            # get CID address
+            self.cid_addr = node.sendATComm("AT+CGPADDR=1","OK")    # +CGPADDR: 1, "192.168.2.6"
+            print("self.cid_addr", self.cid_addr)
+            sys.exit()
+            sleep(5)
+            # AT+CGDCONT=[<cid>[,<PDP_type>[,<APN>[,<PDP_addr>
+            # AT+CGDCONT=1,\"IP\",\"default\",\"192.168.2.6\",0,0
+            node.sendATComm("AT+CGDCONT=1,\"IP\",\"default\",\"192.168.2.6\",0,0","OK")
+            sleep(5)
+            node.sendATComm("AT+CGDCONT?","OK")     # the first row is:1, "IP", "default", "192.168.2.6", 0,0,0,0
+            
+            # Read command returns the current activation state for all the defined PDP contexts in the format:
+            node.sendATComm("AT+CGACT?","OK")   # CGACT:1,1     rest are 0s
+
+            # page 338 - recall this is multiple time for context activation
+            node.sendATComm("AT#SGACT?","OK")   # IPEasy Context Activation
+            sleep(5)
+            node.sendATComm("AT#SGACT=1,1","OK")
+            sleep(5)
+
+
 
     def mqtt_open(self):    # Telit Now
         # - Configure MQTT   AT#MQCFG=<instanceNumber>,<hostname>,<port>,<cid>
@@ -110,7 +167,6 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         # check the current configuration, e.g., hostname, port number, etc
         self.sendATComm("AT#MQCFG?","OK")
         
-
     def mqtt_connect(self):     # Telit Now
         # Connect and Log in the MQTT Broker AT#MQCONN=<instanceNumber>,<clientID>,<userName>,<passWord>
         self.sendATComm("AT#MQCONN=1,\"1\",\"userName\",\"passWord\"","OK")     # takes long time
@@ -226,9 +282,12 @@ if __name__ == "__main__":
             sleep(10)
             node_getOperator = node.sendATComm("AT#RFSTS","OK")
 
-        if registered:        
+        if registered:
+            print("Check the PDP context")
+            node.pdp_context_check_and_enable()
             print("Check MQTT Feature is enabled")
             node.mqtt_check_and_enable()
+            
             # Check the current configuration, e.g., hostname, port number, etc
             print("Check the current configuration, e.g., hostname, port number")
             node_mqtt_status = node.sendATComm("AT#MQCFG?","OK")

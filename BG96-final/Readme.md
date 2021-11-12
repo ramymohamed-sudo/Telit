@@ -4,6 +4,8 @@
 >> git clone --filter=blob:none --sparse  https://github.com/ramymohamed-sudo/Telit-and-BG96.>> git sparse-checkout add resources/images/file.png
 >> git sparse-checkout add resources/images/
 # partial clone and sparse-checkout
+>> git sparse-checkout set BG96-final/
+>> git sparse-checkout init --cone
 
 # sparse check-out
 >> cd Telit-and-BG96
