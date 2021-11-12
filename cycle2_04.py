@@ -139,7 +139,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
             """ check REG commands, 1,5 => 5 for HSUPA not LTE  """
             # get CID address
             self.cid_addr = node.sendATComm("AT+CGPADDR=1","OK")    # +CGPADDR: 1, "192.168.2.6"
-            print("self.cid_addr", self.cid_addr)
+            print("self.cid_addr", self.cid_addr[-20:-2])
             print("length of self.cid_addr", len(self.cid_addr))
             sys.exit()
             sleep(5)
