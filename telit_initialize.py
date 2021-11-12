@@ -92,9 +92,9 @@ AT#PLMNUPDATE[<action>,<MCC>,<MNC>[,<PLMNname>]]
 # #MQEN: <instanceNumber>,<enabled>
 node.sendATComm("AT#MQEN?","OK")
 node.sendATComm("AT#MQEN=?","OK")
-# - Enable MQTT Feature - instanceNumber=1
+# - Enable MQTT Feature - instanceNumber=1 then 2
 node.sendATComm("AT#MQEN=1,1","OK")
-
+node.sendATComm("AT#MQEN=2,1","OK")
 
 # - Configure MQTT   AT#MQCFG=<instanceNumber>,<hostname>,<port>,<cid>
 node.sendATComm("AT#MQCFG=1,\"9.162.161.90\",1883,6","OK")  # the cid was 1 then made 6 
@@ -109,8 +109,12 @@ node.sendATComm("AT#MQCFG?","OK")
 node.sendATComm("AT#MQCONN?","OK")
 # Connect and Log in the MQTT Broker AT#MQCONN=<instanceNumber>,<clientID>,<userName>,<passWord>
 node.sendATComm("AT#MQCONN=1,\"1\",\"userName\",\"passWord\"","OK")     # takes long time
+node.sendATComm("AT#MQCONN=1,\"cycle2-05\",\"\",\"\"","OK")
+node.sendATComm("AT#MQCONN=1,\"cycle2-10\",,","OK")
+
 # check again if it is connected
-node.sendATComm("AT#MQCONN=?","OK")    # should return 1, 1
+# node.sendATComm("AT#MQCONN=?","OK")    # should return 1, 1
+node.sendATComm("AT#MQCONN?","OK")    # should return 1, 1
 
 
 # AT#MQPUBS - Publish ASCII String
@@ -118,15 +122,19 @@ node.sendATComm("AT#MQCONN=?","OK")    # should return 1, 1
 node.sendATComm("AT#MQPUBS=?","OK")
 myMessage = 'hello'
 # AT#MQPUBS=<instanceNumber>,<topic>,<retain>,<qos>,<message>
-node.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,\"hello\"","OK")
+node.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,\"hello\""+node.CTRL_Z,"OK")
 
 # node.sendATComm("","OK")
 
 
 # Test command reports the available range of values for parameters.
-node.sendATComm("AT#MQSUB=?","OK")
+# ? node.sendATComm("AT#MQSUB=?","OK")
+node.sendATComm("AT#MQSUB?","OK")
+
 # Subscribe to a Topic AT#MQSUB=<instanceNumber>,<topic>
 node.sendATComm("AT#MQSUB=1,\"5G-Solutions\"","OK")
+
+node.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,\"hello world\""+self.CTRL_Z,"OK")
 
 
 

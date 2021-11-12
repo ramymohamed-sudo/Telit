@@ -1,12 +1,7 @@
 
 
-""" This code is based on Sixfab basic HAT and Telit module and Pijuice HAT 
-No built-in sensors witht the Sixfab HAT - 
-Remember for Pijuice HAT, there was a function to stop the battery from being charged (if needed)
-"""
-
 from pijuice import PiJuice
-import IoTSixfabTelit
+import IoTSixfab
 from time import sleep
 import subprocess
 import time
@@ -67,12 +62,12 @@ class WifiMqtt(mqtt.Client):
         print("json_data", json_data)
 
 
-class IoTMqtt(IoTSixfabTelit.IoT):
+class IoTMqtt(IoTSixfab.IoT):
     def __init__(self,
                 host_name= '9.162.161.90',
-                port=1883,
+                port="1883",
                 topic="5G-Solutions",
-                clientID="sixfab",
+                clientID=socket.gethostname(),      # "sixfab"
                 tcpconnectID=0,
                 msgID=1,
                 qos=0,
@@ -96,40 +91,41 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         # <password> Password corresponding to the user name of the client.
         self.no_of_secs_before_send_msg = 5
     
-    def mqtt_check_and_enable(self):
-        self.node_mqtt_check_enable = self.sendATComm("AT#MQEN?","OK")
-        if not search('1,1', self.node_mqtt_check_enable):      # 1,1 and 2,1??
-            print("Enable MQTT feature as it not enabled")
-            self.sendATComm("AT#MQEN=1,1","OK")
+    def enable_disable_powerup(self):
+        self.setupGPIO()
+        sleep(2)
+        self.disable()
+        sleep(2)
+        self.enable()
+        sleep(2)
+        self.powerUp()
+        sleep(10)
 
-    def mqtt_open(self):    # Telit Now
-        # - Configure MQTT   AT#MQCFG=<instanceNumber>,<hostname>,<port>,<cid>
-        self.sendATComm("AT#MQCFG=1,\"9.162.161.90\",1883,1","OK")  # the cid was 1 then made 6 
+    def mqtt_open(self):
+        # AT+QMTOPEN=<tcpconnectID>,"<host_name>"",<port>
+        # self.sendATComm("AT+QMTOPEN=0, "+self.host_name+", "+self.port,"+QMTOPEN: 0")
+        self.sendATComm("AT+QMTOPEN=0, \"9.162.161.90\", 1883","+QMTOPEN: 0")
 
-    def mqtt_status(self):      # Telit Now
-        # check the current configuration, e.g., hostname, port number, etc
-        self.sendATComm("AT#MQCFG?","OK")
-        
+    def mqtt_status(self):
+        self.sendATComm("AT+QMTOPEN?","OK")
 
-    def mqtt_connect(self):     # Telit Now
-        # Connect and Log in the MQTT Broker AT#MQCONN=<instanceNumber>,<clientID>,<userName>,<passWord>
-        self.sendATComm("AT#MQCONN=1,\"1\",\"userName\",\"passWord\"","OK")     # takes long time
+    def mqtt_connect(self):
+        # AT+QMTCONN=<tcpconnectID>,"<clientID>"[,"<username>"[,"<password>"]]
+        self.sendATComm("AT+QMTCONN=0,\"sixfab\"","+QMTCONN: 0")
 
-    def mqtt_publish(self, message=None):
+    def mqtt_publish(self, message):
+        # AT+QMTPUB=<tcpconnectID>,<msgID>,<qos>,<retain>,"<topic>"
+        # self.sendATComm("AT+QMTPUB=0,0,0,0,"+self.topic,">")
+        self.sendATComm("AT+QMTPUB=0,0,0,0,\"5G-Solutions\"",">")
         print(f"Waiting {self.no_of_secs_before_send_msg} seconds before sending a message....")
         sleep(self.no_of_secs_before_send_msg)
-
-        # Test command reports the available range of values for parameters
-        node.sendATComm("AT#MQPUBS=?","OK")
-        #MQPUBS: (1-2),,(0-1),(0-2),,
-        node.sendATComm("AT#MQPUBS?","OK")
-
-        self.myMessage = "Hello 2025"
-        # AT#MQPUBS=<instanceNumber>,<topic>,<retain>,<qos>,<message>
-        node.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.myMessage+self.CTRL_Z,"OK")
+        self.data_frame_json = message
+        self.sendATComm(self.data_frame_json+self.CTRL_Z,"+QMTPUB: 0,0,0")
 
     def mqtt_close(self):
+        # # AT+QMTCLOSE=<tcpconnectID>
         self.sendATComm("AT+QMTCLOSE=0","+QMTCLOSE: 0")
+
 
 def initialize_sensor_data():
     global sensor_data
@@ -138,22 +134,26 @@ def initialize_sensor_data():
     sensor_data['timestamp'] = millis
     sensor_data['name'] = socket.gethostname()
 
-
-""" add features such as CPU Temperature/no of running processes/CPU 
+""" add features such as CPU Temperature/no of running processes/CPU
 and RAM utilization """
 def cpu_temp_no_of_process_ram_utilization():
     pass
 
-""" Telit parameters reading"""
-def update_Telit_values():
+
+""" BG96 parameters reading"""
+def update_BG_values():
     sensor_data['tx_pwr'] = 1.0
     sensor_data['nb_iot_mode'] = 'mode'
-    # sensor_data['humidity'] = str(round(node.readHum(), 2))
-    # sensor_data['temperature'] = str(round(node.readTemp(), 2))
+    sensor_data['humidity'] = str(round(node.readHum(), 2))
+    sensor_data['temperature'] = str(round(node.readTemp(), 2))
     # sensor_data['light'] = light
-    # sensor_data['acceleration_x'] = 0.0  
-    # sensor_data['acceleration_y'] = 1.1  
-    # sensor_data['acceleration_z'] = 2.2
+    sensor_data['acceleration_x'] = 0.0  # str(node.readAccel())[0]
+    sensor_data['acceleration_y'] = 1.1  # str(node.readAccel())[1]
+    sensor_data['acceleration_z'] = 2.2  # str(node.readAccel())[2]
+    sensor_data['adc0'] = str(node.readAdc(0))
+    sensor_data['adc1'] = str(node.readAdc(1))
+    sensor_data['adc2'] = str(node.readAdc(2))
+    sensor_data['adc3'] = str(node.readAdc(3))
 
 """ Raspberry PI parameters reading"""
 def raspb_pi_update_values():
@@ -162,10 +162,8 @@ def raspb_pi_update_values():
     # memory usage/ CPU usage of the R-PI as well
     # RX/TX and processing on BG96
     # looking for intergrated sensors as one part on chip
-    # 2021-  features such as CPU Temperature/no of 
-    # running processes/CPU and RAM utilization
 
-""" Battery parameters reading - Try try: or asset or eval """
+""" Battery parameters reading"""
 def battery_update_values():
     status = pijuice.status.GetStatus()
     key, value = next(iter(status.items()))
@@ -182,39 +180,43 @@ def battery_update_values():
         # pijuice.status.GetBatteryTemperature()
         # pijuice.status.GetChargeLevel()
     else: 
-        sensor_data['battery_level'] = 90.0    # try None and check if postgres accepts it
-        sensor_data['battery_milli_voltage'] = 30.0   # try None
-        sensor_data['battery_temperature'] = 18.0    # try None
-        sensor_data['hours_since_fully_charged'] = 2     # try None
-        sensor_data['charge_cycle'] = '1'    # try None
+        sensor_data['battery_level'] = 90.0
+        sensor_data['battery_milli_voltage'] = 30.0
+        sensor_data['battery_temperature'] = 18.0
+        sensor_data['hours_since_fully_charged'] = 2
+        sensor_data['charge_cycle'] = '1'
 
 def main():
     # data = ','.join(row)
     initialize_sensor_data()
-    update_Telit_values()
+    update_BG_values()
     raspb_pi_update_values()
     battery_update_values()
 
-iot_is_used = True
+iot_is_used = True     # True
 sensor_data = dict()
 node = IoTMqtt()
 node.setupGPIO()
-no_of_iter = 5
+no_of_iter = 2
 i = 1
 
-""" Telit is enabled by default (double check "ls /dev")- maybe assert """
-# node.disable()
-time.sleep(1)
-# node.enable()
-time.sleep(1)
+
+""" The lines below should be uncommented for real scenarios """
+node.disable()
+sleep(5)
+node.enable()
+sleep(5)
+node.powerUp()     # we might need a condition to check it is powered up
+sleep(10)
 
 if __name__ == "__main__":
+
     if iot_is_used:
         registered = False
         no_of_reg_loops = 50
         init_ctr = 0
-        node_getOperator = node.sendATComm("AT#RFSTS","OK")     # the module should be up
-        # if the sensor not registered, wait a few loops until register
+        node_getOperator = node.sendATComm("AT+COPS?","OK\r\n")     # the module should be up/powered
+        # if the sensor not registered, wait a few loops until register 
         while (no_of_reg_loops > 1):
             if search('Amarisoft', node_getOperator):
                 print("The sensor is registered with Amarisoft")
@@ -224,46 +226,30 @@ if __name__ == "__main__":
             init_ctr += 1
             print(f"waiting {init_ctr*10} secs for registeration")
             sleep(10)
-            node_getOperator = node.sendATComm("AT#RFSTS","OK")
+            node_getOperator = node.sendATComm("AT+COPS?","OK\r\n")
 
         if registered:        
-            print("Check MQTT Feature is enabled")
-            node.mqtt_check_and_enable()
-            # Check the current configuration, e.g., hostname, port number, etc
-            print("Check the current configuration, e.g., hostname, port number")
-            node_mqtt_status = node.sendATComm("AT#MQCFG?","OK")
+            # MQTT Connection - check the MQTT status
+            node_mqtt_status = node.sendATComm("AT+QMTOPEN?","OK")  # the node should be registered
             while not (search(node.host_name, node_mqtt_status)):
                 print("trying to open MQTT connection via mqtt_open() and mqtt_connect()")
                 node.mqtt_open()
-                sleep(5)
+                sleep(10)
                 print("mqtt_open() is passed")
                 node.mqtt_connect()
                 sleep(10)
                 print("mqtt_connect() is passed")
-                node_mqtt_status = node.sendATComm("AT#MQCFG?","OK")
+                node_mqtt_status = node.sendATComm("AT+QMTOPEN?","OK")
                 # pass
                 # break this loop after a few times and call node.sendATComm("AT+COPS?","OK\r\n")
                 # and come to these steps again
-            print("The MQTT connection is now open and might be connected?")
-            
-            
-            # DOUBLE check for node.mqtt_connect()
-            # reports the configuration of active MQTT connections
-            check_connection = node.sendATComm("AT#MQCONN?","OK")
-            if not (search('#MQCONN: 1,1', check_connection)):      # instance number is 1
-                # Connect and Log in the MQTT Broker AT#MQCONN=<instanceNumber>,<clientID>,<userName>,<passWord>
-                node.sendATComm("AT#MQCONN=1,\"1\",\"userName\",\"passWord\"","OK")     # takes long time
-                print("I found the MQTT not connected at this stage")
-            print("node.mqtt_connect() is checked")
+            print("The MQTT connection is now open and connected?")
 
             while i <= no_of_iter:
                 print(f"iteration number {i}")
-                # main()
+                main()
                 data_frame_json = json.dumps(sensor_data, indent=4)
-                # node.mqtt_publish(data_frame_json)
-                print("before node.mqtt_publish()")
-                node.mqtt_publish()
-                print("after node.mqtt_publish()")
+                node.mqtt_publish(data_frame_json)
                 # node.mqtt_close()
                 sleep(1)
                 i += 1
@@ -277,9 +263,9 @@ if __name__ == "__main__":
             client.loop_start()
             # print("The loop is just started >>>>>")
             while not connected:
-                time.sleep(0.2)
+                sleep(0.2)
             while not MessageReceived:
-                time.sleep(0.2)
+                sleep(0.2)
             client.loop_stop()
         else:
             while i <= no_of_iter:
@@ -289,5 +275,5 @@ if __name__ == "__main__":
                 client.publish(client.topic, data_frame_json)
                 # client.publish(topic,json.loads(str(row)))
                 client.on_publish_message(data_frame_json)
-                time.sleep(5)
+                sleep(5)
                 i += 1
