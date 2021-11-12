@@ -140,7 +140,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
             # get CID address
             self.cid_addr = node.sendATComm("AT+CGPADDR=1","OK")    # +CGPADDR: 1, "192.168.2.6"
             print("self.cid_addr", self.cid_addr)
-            print("length of self.cid_addr", length(self.cid_addr))
+            print("length of self.cid_addr", len(self.cid_addr))
             sys.exit()
             sleep(5)
             # AT+CGDCONT=[<cid>[,<PDP_type>[,<APN>[,<PDP_addr>
