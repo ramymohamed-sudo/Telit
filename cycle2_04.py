@@ -150,7 +150,6 @@ class IoTMqtt(IoTSixfabTelit.IoT):
             # node.sendATComm("AT+CGDCONT=1,\"IP\",\"default\",\"192.168.2.6\",0,0","OK")
             sleep(5)
             node.sendATComm("AT+CGDCONT?","OK")     # the first row is:1, "IP", "default", "192.168.2.6", 0,0,0,0
-            sys.exit()
             # Read command returns the current activation state for all the defined PDP contexts in the format:
             node.sendATComm("AT+CGACT?","OK")   # CGACT:1,1     rest are 0s
             # page 338 - recall this is multiple time for context activation
