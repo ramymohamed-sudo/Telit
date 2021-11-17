@@ -142,6 +142,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
             self.cid_addr = search(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', self.cid_addr).group()
             print("self.cid_addr", self.cid_addr)
             print("length of self.cid_addr", len(self.cid_addr))
+            print("type of self.cid_addr", type(self.cid_addr))
             sleep(5)
             # AT+CGDCONT=[<cid>[,<PDP_type>[,<APN>[,<PDP_addr>
             # AT+CGDCONT=1,\"IP\",\"default\",\"192.168.2.6\",0,0
@@ -149,7 +150,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
             sleep(5)
             node.sendATComm("AT+CGDCONT?","OK")     # the first row is:1, "IP", "default", "192.168.2.6", 0,0,0,0
             sys.exit()
-            
+
             # Read command returns the current activation state for all the defined PDP contexts in the format:
             node.sendATComm("AT+CGACT?","OK")   # CGACT:1,1     rest are 0s
 
