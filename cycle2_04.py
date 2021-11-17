@@ -152,12 +152,15 @@ class IoTMqtt(IoTSixfabTelit.IoT):
             node.sendATComm("AT+CGDCONT?","OK")     # the first row is:1, "IP", "default", "192.168.2.6", 0,0,0,0
             # Read command returns the current activation state for all the defined PDP contexts in the format:
             node.sendATComm("AT+CGACT?","OK")   # CGACT:1,1     rest are 0s
-            # page 338 - recall this is multiple time for context activation
-            node.sendATComm("AT#SGACT?","OK")   # IPEasy Context Activation
-            sleep(5)
-            node.sendATComm("AT#SGACT=1,1","OK")
-            sleep(5)
-        print("pdp_context_check_and_enable is finished")
+            
+            
+        #     # page 338 - recall this is multiple time for context activation
+        #     node.sendATComm("AT#SGACT?","OK")   # IPEasy Context Activation
+        #     sleep(5)
+        #     node.sendATComm("AT#SGACT=1,1","OK")
+        #     sleep(5)
+        # print("pdp_context_check_and_enable is finished")
+
 
     def mqtt_status(self):      # Telit Now
         # check the current configuration, e.g., hostname, port number, etc
