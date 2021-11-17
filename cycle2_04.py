@@ -197,8 +197,8 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         sleep(self.no_of_secs_before_send_msg)
         self.myMessage = "Hello 2025"
         # AT#MQPUBS=<instanceNumber>,<topic>,<retain>,<qos>,<message>
-        # node.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.myMessage+self.CTRL_Z,"OK")
-        node.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,\"Hello\""+node.CTRL_Z,"OK")
+        node.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.myMessage+self.CTRL_Z,"OK")
+        # node.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,\"Hello\""+node.CTRL_Z,"OK")
 
         # self.data_frame_json = message
         # self.sendATComm(self.data_frame_json+self.CTRL_Z,"+QMTPUB: 0,0,0")
