@@ -303,7 +303,7 @@ if __name__ == "__main__":
             node_getOperator = node.sendATComm("AT#RFSTS","OK")
 
         if registered:
-            print("Check the PDP context")
+            print("Check the . PDP context")
             node.pdp_context_check_and_enable()
             print("Check MQTT Feature is enabled")
             node.mqtt_check_and_enable()
