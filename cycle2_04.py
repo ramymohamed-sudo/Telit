@@ -116,6 +116,8 @@ class IoTMqtt(IoTSixfabTelit.IoT):
             node.sendATComm("AT+CREG=1","OK")  # enable the network registration unsolicited result code
             sleep(5)
             self.reg_mode_stat = node.sendATComm("AT+CREG?","OK") 
+        print("self.reg_mode_stat", self.reg_mode_stat)
+        sys.exit()
         
         if search('1,1', self.reg_mode_stat):
             # AT+CEREG=[<mode>] ; mode=1 enable the network registration unsolicited result code
