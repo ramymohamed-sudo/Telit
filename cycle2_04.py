@@ -111,21 +111,23 @@ class IoTMqtt(IoTSixfabTelit.IoT):
 
         # Read command returns the current value of <mode>, the registration status <stat>
         self.reg_mode_stat = node.sendATComm("AT+CREG?","OK")    # returns 0,1 if mode-disable, registered
-        if not search('1,1', self.reg_mode_stat):
+        if not (search('1,1', self.reg_mode_stat) or search('1,5', self.reg_mode_stat)):
             # AT+CEREG=[<mode>]
             node.sendATComm("AT+CREG=1","OK")  # enable the network registration unsolicited result code
             sleep(5)
             self.reg_mode_stat = node.sendATComm("AT+CREG?","OK") 
         print("self.reg_mode_stat", self.reg_mode_stat)
-        sys.exit()
         
-        if search('1,1', self.reg_mode_stat):
+        if (search('1,1', self.reg_mode_stat) or search('1,5', self.reg_mode_stat)):
             # AT+CEREG=[<mode>] ; mode=1 enable the network registration unsolicited result code
             self.eps_reg_mode = node.sendATComm("AT+CEREG?","OK")     # returns <mode>, <EPS registration status stat>
             if not search('1,1', self.eps_reg_mode):
                 node.sendATComm("AT+CEREG=1","OK")
                 sleep(5)
                 self.eps_reg_mode = node.sendATComm("AT+CEREG?","OK")
+        
+        print("self.eps_reg_mode", self.eps_reg_mode)
+        sys.exit()
         
         if search('1,1', self.eps_reg_mode):
             self.gprs_reg_mode = node.sendATComm("AT+CGREG?","OK")      # AT+CGREG - GPRS Network Registration Status
