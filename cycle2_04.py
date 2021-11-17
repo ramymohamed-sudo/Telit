@@ -149,7 +149,6 @@ class IoTMqtt(IoTSixfabTelit.IoT):
             node.sendATComm("AT+CGDCONT=1,\"IP\",\"default\","+str(self.cid_addr)+",0,0","OK")
             sleep(5)
             node.sendATComm("AT+CGDCONT?","OK")     # the first row is:1, "IP", "default", "192.168.2.6", 0,0,0,0
-            sys.exit()
 
             # Read command returns the current activation state for all the defined PDP contexts in the format:
             node.sendATComm("AT+CGACT?","OK")   # CGACT:1,1     rest are 0s
@@ -290,6 +289,7 @@ if __name__ == "__main__":
             node.pdp_context_check_and_enable()
             print("Check MQTT Feature is enabled")
             node.mqtt_check_and_enable()
+            sys.exit()
             
             # Check the current configuration, e.g., hostname, port number, etc
             print("Check the current configuration, e.g., hostname, port number")
