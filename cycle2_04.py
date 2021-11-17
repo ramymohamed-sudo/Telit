@@ -179,7 +179,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         print("Check the current configuration, e.g., hostname, port number")
         mqtt_config_status = node.sendATComm("AT#MQCFG?","OK")
         while not (search(node.host_name, mqtt_config_status)):
-            print("open MQTT connection via mqtt_open()")
+            print("open the MQTT connection via mqtt_open()")
             node.mqtt_open()
             sleep(5)
             print("Connect MQTT via mqtt_connect()")
@@ -187,6 +187,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
             sleep(10)
             mqtt_config_status = node.sendATComm("AT#MQCFG?","OK")
         sleep(5)
+        
         mqtt_connect_status = node.sendATComm("AT#MQCONN?","OK")    # should return 1,1
         if search('1,1', mqtt_connect_status):
             print("The MQTT connection is now open and connected?")
@@ -194,12 +195,6 @@ class IoTMqtt(IoTSixfabTelit.IoT):
     def mqtt_publish(self, message=None):
         print(f"Waiting {self.no_of_secs_before_send_msg} seconds before sending a message....")
         sleep(self.no_of_secs_before_send_msg)
-
-        # Test command reports the available range of values for parameters
-        node.sendATComm("AT#MQPUBS=?","OK")
-        #MQPUBS: (1-2),,(0-1),(0-2),,
-        node.sendATComm("AT#MQPUBS?","OK")
-
         self.myMessage = "Hello 2025"
         # AT#MQPUBS=<instanceNumber>,<topic>,<retain>,<qos>,<message>
         # node.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.myMessage+self.CTRL_Z,"OK")
@@ -312,14 +307,13 @@ if __name__ == "__main__":
             print("Check MQTT Feature is enabled")
             node.mqtt_check_and_enable()
             node.check_config_open_connect()
-            sys.exit()
             # reports the configuration of active MQTT connections
             check_connection = node.sendATComm("AT#MQCONN?","OK")
             if not (search('#MQCONN: 1,1', check_connection)):      # instance number is 1
                 # Connect and Log in the MQTT Broker AT#MQCONN=<instanceNumber>,<clientID>,<userName>,<passWord>
                 node.sendATComm("AT#MQCONN=1,\"1\",\"userName\",\"passWord\"","OK")     # takes long time
                 print("I found the MQTT not connected at this stage")
-            print("node.mqtt_connect() is checked")
+            print("node.mqtt_connect() is checked connected")
 
             while i <= no_of_iter:
                 print(f"iteration number {i}")
