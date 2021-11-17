@@ -146,16 +146,12 @@ class IoTMqtt(IoTSixfabTelit.IoT):
             sleep(5)
             # AT+CGDCONT=[<cid>[,<PDP_type>[,<APN>[,<PDP_addr>
             # AT+CGDCONT=1,\"IP\",\"default\",\"192.168.2.6\",0,0
-            node.sendATComm("AT+CGDCONT=1,\"IP\",\"default\","+self.cid_addr+",0,0","OK")
-
-            self.sendATComm(self.data_frame_json+self.CTRL_Z,"+QMTPUB: 0,0,0")
-
+            # node.sendATComm("AT+CGDCONT=1,\"IP\",\"default\","+str(self.cid_addr)+",0,0","OK")
+            node.sendATComm("AT+CGDCONT=1,\"IP\",\"default\",\"192.168.2.6\",0,0","OK")
             sleep(5)
             node.sendATComm("AT+CGDCONT?","OK")     # the first row is:1, "IP", "default", "192.168.2.6", 0,0,0,0
-
             # Read command returns the current activation state for all the defined PDP contexts in the format:
             node.sendATComm("AT+CGACT?","OK")   # CGACT:1,1     rest are 0s
-
             # page 338 - recall this is multiple time for context activation
             node.sendATComm("AT#SGACT?","OK")   # IPEasy Context Activation
             sleep(5)
@@ -202,7 +198,8 @@ class IoTMqtt(IoTSixfabTelit.IoT):
 
         self.myMessage = "Hello 2025"
         # AT#MQPUBS=<instanceNumber>,<topic>,<retain>,<qos>,<message>
-        node.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.myMessage+self.CTRL_Z,"OK")
+        # node.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.myMessage+self.CTRL_Z,"OK")
+        node.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,\"Hello\""+node.CTRL_Z,"OK")
 
         # self.data_frame_json = message
         # self.sendATComm(self.data_frame_json+self.CTRL_Z,"+QMTPUB: 0,0,0")
