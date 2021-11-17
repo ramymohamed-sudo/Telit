@@ -307,7 +307,7 @@ if __name__ == "__main__":
             node.pdp_context_check_and_enable()
             print("Check MQTT Feature is enabled")
             node.mqtt_check_and_enable()
-            node.check_config_open_connect
+            node.check_config_open_connect()
             sys.exit()
             # reports the configuration of active MQTT connections
             check_connection = node.sendATComm("AT#MQCONN?","OK")
