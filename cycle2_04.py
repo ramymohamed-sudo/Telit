@@ -146,7 +146,10 @@ class IoTMqtt(IoTSixfabTelit.IoT):
             sleep(5)
             # AT+CGDCONT=[<cid>[,<PDP_type>[,<APN>[,<PDP_addr>
             # AT+CGDCONT=1,\"IP\",\"default\",\"192.168.2.6\",0,0
-            node.sendATComm("AT+CGDCONT=1,\"IP\",\"default\","+str(self.cid_addr)+",0,0","OK")
+            node.sendATComm("AT+CGDCONT=1,\"IP\",\"default\","+self.cid_addr+",0,0","OK")
+
+            self.sendATComm(self.data_frame_json+self.CTRL_Z,"+QMTPUB: 0,0,0")
+
             sleep(5)
             node.sendATComm("AT+CGDCONT?","OK")     # the first row is:1, "IP", "default", "192.168.2.6", 0,0,0,0
 
@@ -171,7 +174,6 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         # Connect and Log in the MQTT Broker AT#MQCONN=<instanceNumber>,<clientID>,<userName>,<passWord>
         self.sendATComm("AT#MQCONN=1,\"1\",\"userName\",\"passWord\"","OK")     # takes long time
 
-    
     def check_config_open_connect(self):
         # Check the current configuration, e.g., hostname, port number, etc
         print("Check the current configuration, e.g., hostname, port number")
@@ -189,8 +191,6 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         if search('1,1', mqtt_connect_status):
             print("The MQTT connection is now open and connected?")
         
-        
-
     def mqtt_publish(self, message=None):
         print(f"Waiting {self.no_of_secs_before_send_msg} seconds before sending a message....")
         sleep(self.no_of_secs_before_send_msg)
@@ -203,6 +203,9 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         self.myMessage = "Hello 2025"
         # AT#MQPUBS=<instanceNumber>,<topic>,<retain>,<qos>,<message>
         node.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.myMessage+self.CTRL_Z,"OK")
+
+        # self.data_frame_json = message
+        # self.sendATComm(self.data_frame_json+self.CTRL_Z,"+QMTPUB: 0,0,0")
 
     def mqtt_close(self):
         self.sendATComm("AT+QMTCLOSE=0","+QMTCLOSE: 0")
