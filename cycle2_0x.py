@@ -179,6 +179,14 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         sensor_data = dict()
         sensor_data['ID'] = 12
         sensor_data['Battery'] = 90.0
+        sensor_data['name'] = 90.0
+        sensor_data['tx_pwr'] = 90.0
+        sensor_data['nb_iot_mode'] = 90.0
+        sensor_data['cpu_temperature'] = 90.0
+        sensor_data['battery_milli_voltage'] = 90.0
+        sensor_data['battery_temperature'] = 90.0
+        sensor_data['hours_since_fully_charged'] = 90.0
+        sensor_data['charge_cycle'] = 90.0
         # sensor_data = {"ID": 12, "Battery": 90}
         # sensor_data = {'timestamp': 1637243564699,
         #                'name': 'cycle2-07',
