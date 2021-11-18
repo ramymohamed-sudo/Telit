@@ -6,14 +6,14 @@ hostname=$(hostname)
 
 if [ $hostname == 'k8s-virtual-machine' ]
 then
-echo "This is the analytical server"
+echo "This is the analytical server";
 git add .;
 git commit -m "$(date)";
 git push origin master;
 
 else
-   echo "This is a Raspberry-PI "
-   git pull origin master
+echo "This is a Raspberry-PI ";
+git pull origin master;
 
 fi
 
