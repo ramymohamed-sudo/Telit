@@ -193,7 +193,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         #                'charge_cycle': '1'}
 
         # self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{sensor_data}\""+self.CTRL_Z,"OK") # this also works well 
-        self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{new_sensor_data}\""+self.CTRL_Z,"OK")
+        self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,{new_sensor_data}"+self.CTRL_Z,"OK")
 
     def mqtt_close(self):
         self.sendATComm("AT#MQDISC=1","OK")
