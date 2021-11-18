@@ -20,6 +20,7 @@ import sys
 import flask
 import socket
 from re import search
+import itertools
 
 
 connected = False
@@ -176,11 +177,14 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         sleep(self.secs_befr_send)
         # self.myMessage = "Hello 2025"
         # self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.myMessage+self.CTRL_Z,"OK")
-        sensor_data = dict()
-        sensor_data['ID'] = 12
-        sensor_data['Battery'] = 90.0
-        self.new_sensor_data = json.dumps(sensor_data) + self.CTRL_Z
-        print(len(self.new_sensor_data))
+        self.new_sensor_data = dict(itertools.islice(sensor_data.items(), 2))
+        print("len(self.new_sensor_data)", len(self.new_sensor_data))
+
+        # sensor_data = dict()
+        # sensor_data['ID'] = 12
+        # sensor_data['Battery'] = 90.0
+        # self.new_sensor_data = json.dumps(sensor_data) + self.CTRL_Z
+        
         # sensor_data = {"ID": 12, "Battery": 90}
         # sensor_data = {'timestamp': 1637243564699,
         #                'name': 'cycle2-07',
@@ -193,11 +197,9 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         #                'hours_since_fully_charged': 2,
         #                'charge_cycle': '1'}
 
-        # self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{sensor_data}\""+self.CTRL_Z,"OK") # this also works well 
-        self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.new_sensor_data,"OK")
+        self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{sensor_data}\""+self.CTRL_Z,"OK") # this also works well 
+        # self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.new_sensor_data,"OK")
         
-        self.sendATComm(self.data_frame_json+self.CTRL_Z,"+QMTPUB: 0,0,0")
-
     def mqtt_close(self):
         self.sendATComm("AT#MQDISC=1","OK")
     
