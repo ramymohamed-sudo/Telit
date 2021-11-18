@@ -178,7 +178,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         # self.myMessage = "Hello 2025"
         # self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.myMessage+self.CTRL_Z,"OK")
         self.new_sensor_data = json.dumps(dict(itertools.islice(sensor_data.items(), 6)))+self.CTRL_Z
-        print("self.new_sensor_data", self.new_sensor_data)
+        print("self.new_sensor_data +  self.CTRL_Z", self.new_sensor_data)
         # print("len(json.dumps(self.new_sensor_data))", len(json.dumps(self.new_sensor_data)))
 
         # sensor_data = dict()
@@ -199,7 +199,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         #                'chrg_cycl': '1'}
 
         # self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{self.new_sensor_data}\""+self.CTRL_Z,"OK") # this also works well 
-        self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,{self.new_sensor_data}","OK") 
+        self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.new_sensor_data,"OK") 
         # self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.new_sensor_data,"OK")
         
     def mqtt_close(self):
