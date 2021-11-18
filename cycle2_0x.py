@@ -127,40 +127,46 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         if not search('1,1', self.sgact):
             self.sendATComm("AT#SGACT=1,1","OK")
             sleep(5)
-        
         print("pdp_context_check_and_enable is finished")
 
 
-    def mqtt_status(self):      # Telit Now
+    def mqtt_status(self):      
         # check the current configuration, e.g., hostname, port number, etc
         self.sendATComm("AT#MQCFG?","OK")
 
-    def mqtt_open(self):    # Telit Now
-        # - Configure MQTT   AT#MQCFG=<instanceNumber>,<hostname>,<port>,<cid>
+    def mqtt_open(self):    
         self.sendATComm("AT#MQCFG=1,\"9.162.161.90\",1883,1","OK") 
         
-    def mqtt_connect(self):     # Telit Now
-        # Connect and Log in the MQTT Broker AT#MQCONN=<instanceNumber>,<clientID>,<userName>,<passWord>
-        self.sendATComm("AT#MQCONN=1,\"1\",\"userName\",\"passWord\"","OK")     # takes long time
+    def mqtt_connect(self): 
+        # self.sendATComm("AT#MQCONN=1,\"1\",\"userName\",\"passWord\"","OK")
+        name = socket.gethostname()    
+        self.sendATComm(f"AT#MQCONN=1,\"{name}\",\"userName\",\"passWord\"","OK")
 
     def check_config_open_connect(self):
-        # Check the current configuration, e.g., hostname, port number, etc
-        print("Check the current configuration, e.g., hostname, port number")
         mqtt_config_status = self.sendATComm("AT#MQCFG?","OK")
-        while not (search(self.broker_address, mqtt_config_status)):
+        if not (search(self.broker_address, mqtt_config_status)):
             print("open the MQTT connection via mqtt_open()")
             self.mqtt_open()
             sleep(5)
             print("Connect MQTT via mqtt_connect()")
             self.mqtt_connect()
-            sleep(10)
-            mqtt_config_status = self.sendATComm("AT#MQCFG?","OK")
-        sleep(5)
-        
+            sleep(5)
+
         mqtt_connect_status = self.sendATComm("AT#MQCONN?","OK")    # should return 1,1
         if search('1,1', mqtt_connect_status):
-            print("The MQTT connection is now open and connected?")
-        
+            print("The MQTT connection is now open and connected")
+
+        elif search('1,2', mqtt_connect_status):
+            print("Please restart the module and exit code as connection status is 2")
+            self.sendATComm("AT#REBOOT","OK")
+            sys.exit()
+
+        elif search('1,0', mqtt_connect_status):
+            print("The MQTT connection is not open now")
+            print("Connect MQTT via mqtt_connect()")
+            self.mqtt_connect()
+
+
     def mqtt_publish(self, message=None):
         print(f"Waiting {self.no_of_secs_before_send_msg} seconds before sending a message....")
         sleep(self.no_of_secs_before_send_msg)
@@ -271,11 +277,14 @@ if __name__ == "__main__":
         if registered:
             print("Check the PDP context")
             node.pdp_context_check_and_enable()
-            sys.exit()
-
-            print("Check MQTT Feature is enabled")
+            
+            print("Check MQTT is enabled")
             node.mqtt_check_and_enable()
+
+            print("Check MQTT is enabled")
             node.check_config_open_connect()
+            sys.exit()
+            
             # reports the configuration of active MQTT connections
             check_connection = node.sendATComm("AT#MQCONN?","OK")
             if not (search('#MQCONN: 1,1', check_connection)):      # instance number is 1
