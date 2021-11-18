@@ -23,3 +23,5 @@ fi
 # if [ -d "$DIR" ]; then
 #   echo "Installing config files in ${DIR}..."
 # fi
+
+# try -e, for loop, while loop, search in string, awk and grep
