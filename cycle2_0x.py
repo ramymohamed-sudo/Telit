@@ -177,7 +177,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         sleep(self.secs_befr_send)
         # self.myMessage = "Hello 2025"
         # self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.myMessage+self.CTRL_Z,"OK")
-        self.new_sensor_data = dict(itertools.islice(sensor_data.items(), 4))
+        self.new_sensor_data = dict(itertools.islice(sensor_data.items(), 7))
         print("len(self.new_sensor_data)", len(self.new_sensor_data))
 
         # sensor_data = dict()
@@ -189,13 +189,13 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         # sensor_data = {'timestamp': 1637243564699,
         #                'name': 'cycle2-07',
         #                'tx_pwr': 1.0,
-        #                'nb_iot_mode': 'mode',
-        #                'cpu_temperature': 65.7,
-        #                'battery_level': 97,
-        #                'battery_milli_voltage': 4148,
-        #                'battery_temperature': 40,
-        #                'hours_since_fully_charged': 2,
-        #                'charge_cycle': '1'}
+        #                'mode': 'mode',
+        #                'cpu_tmp': 65.7,
+        #                'btr_lvl': 97,
+        #                'btr_vol': 4148,
+        #                'btr_tmp': 40,
+        #                'hrs_sinc_chrg': 2,
+        #                'chrg_cycl': '1'}
 
         self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{self.new_sensor_data}\""+self.CTRL_Z,"OK") # this also works well 
         # self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.new_sensor_data,"OK")
@@ -222,7 +222,7 @@ def cpu_temp_no_of_process_ram_utilization():
 """ Telit parameters reading"""
 def update_Telit_values():
     sensor_data['tx_pwr'] = 1.0
-    sensor_data['nb_iot_mode'] = 'mode'
+    sensor_data['mode'] = 'mode'
     # sensor_data['humidity'] = str(round(node.readHum(), 2))
     # sensor_data['temperature'] = str(round(node.readTemp(), 2))
     # sensor_data['light'] = light
@@ -233,7 +233,7 @@ def update_Telit_values():
 """ Raspberry PI parameters reading"""
 def raspb_pi_update_values():
     cpu_temp = subprocess.check_output('vcgencmd measure_temp', shell=True)
-    sensor_data['cpu_temperature'] = float(str(cpu_temp)[7:11])
+    sensor_data['cpu_tmp'] = float(str(cpu_temp)[7:11])
     # memory usage/ CPU usage of the R-PI as well
     # RX/TX and processing on BG96
     # looking for intergrated sensors as one part on chip
@@ -245,11 +245,11 @@ def battery_update_values():
     status = pijuice.status.GetStatus()
     key, value = next(iter(status.items()))
     if key != 'error':
-        sensor_data['battery_level'] = pijuice.status.GetChargeLevel()['data']
-        sensor_data['battery_milli_voltage'] = pijuice.status.GetBatteryVoltage()['data']
-        sensor_data['battery_temperature'] = pijuice.status.GetBatteryTemperature()['data']
-        sensor_data['hours_since_fully_charged'] = 2    # env.variables from IFTT script
-        sensor_data['charge_cycle'] = '1'
+        sensor_data['btr_lvl'] = pijuice.status.GetChargeLevel()['data']
+        sensor_data['btr_vol'] = pijuice.status.GetBatteryVoltage()['data']
+        sensor_data['btr_tmp'] = pijuice.status.GetBatteryTemperature()['data']
+        sensor_data['hrs_sinc_chrg'] = 2    # env.variables from IFTT script
+        sensor_data['chrg_cycl'] = '1'
         """ Battery methods to enable/disable charging """
         # pijuice.status.GetStatus()
         # pijuice.status.GetChargeLevel()
@@ -257,11 +257,11 @@ def battery_update_values():
         # pijuice.status.GetBatteryTemperature()
         # pijuice.status.GetChargeLevel()
     else: 
-        sensor_data['battery_level'] = 90.0    # try None and check if postgres accepts it
-        sensor_data['battery_milli_voltage'] = 30.0   # try None
-        sensor_data['battery_temperature'] = 18.0    # try None
-        sensor_data['hours_since_fully_charged'] = 2     # try None
-        sensor_data['charge_cycle'] = '1'    # try None
+        sensor_data['btr_lvl'] = 90.0    # try None and check if postgres accepts it
+        sensor_data['btr_vol'] = 30.0   # try None
+        sensor_data['btr_tmp'] = 18.0    # try None
+        sensor_data['hrs_sinc_chrg'] = 2     # try None
+        sensor_data['chrg_cycl'] = '1'    # try None
 
 def main():
     # data = ','.join(row)
