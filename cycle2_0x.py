@@ -176,7 +176,21 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         sleep(self.secs_befr_send)
         # self.myMessage = "Hello 2025"
         # self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.myMessage+self.CTRL_Z,"OK")
-        sensor_data = {"ID": 12, "Battery": 90}
+        sensor_data = dict()
+        sensor_data['ID'] = 12
+        sensor_data['Battery'] = 90.0
+        # sensor_data = {"ID": 12, "Battery": 90}
+        # sensor_data = {'timestamp': 1637243564699,
+        #                'name': 'cycle2-07',
+        #                'tx_pwr': 1.0,
+        #                'nb_iot_mode': 'mode',
+        #                'cpu_temperature': 65.7,
+        #                'battery_level': 97,
+        #                'battery_milli_voltage': 4148,
+        #                'battery_temperature': 40,
+        #                'hours_since_fully_charged': 2,
+        #                'charge_cycle': '1'}
+
         self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{sensor_data}\""+self.CTRL_Z,"OK") # this also works well 
 
     def mqtt_close(self):
