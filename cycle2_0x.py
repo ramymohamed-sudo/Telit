@@ -177,8 +177,8 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         sleep(self.secs_befr_send)
         # self.myMessage = "Hello 2025"
         # self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.myMessage+self.CTRL_Z,"OK")
-        self.new_sensor_data = json.dumps(dict(itertools.islice(sensor_data.items(), 6)))
-        print("len(json.dumps(self.new_sensor_data))", len(self.new_sensor_data))
+        self.new_sensor_data = dict(itertools.islice(sensor_data.items(), 6))
+        print("len(json.dumps(self.new_sensor_data))", len(json.dumps(self.new_sensor_data)))
 
         # sensor_data = dict()
         # sensor_data['ID'] = 12
