@@ -287,8 +287,9 @@ if __name__ == "__main__":
 
             while i <= no_of_iter:
                 print(f"iteration number {i}")
-                # main()
-                data_frame_json = json.dumps(sensor_data, indent=4)
+                main()
+                print(f"sensor_data is:\n {sensor_data}")
+                # data_frame_json = json.dumps(sensor_data, indent=4)
                 # node.mqtt_publish(data_frame_json)
                 print("before node.mqtt_publish()")
                 node.mqtt_publish()
