@@ -188,7 +188,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         # sensor_data = {"ID": 12, "Battery": 90}
         # sensor_data = {'tim': 1637243564699,
         #                'nm': 'cycle2-07',
-        #                'tx_pwr': 1.0,
+        #                'tx_pwr': 1.1,
         #                'mode': 'mode',
         #                'cpu_tmp': 65.7,
         #                'btr_lvl': 97,
