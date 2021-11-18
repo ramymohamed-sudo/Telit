@@ -180,6 +180,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         sensor_data['ID'] = 12
         sensor_data['Battery'] = 90.0
         self.new_sensor_data = json.dumps(sensor_data) + self.CTRL_Z
+        print(len(self.new_sensor_data))
         # sensor_data = {"ID": 12, "Battery": 90}
         # sensor_data = {'timestamp': 1637243564699,
         #                'name': 'cycle2-07',
