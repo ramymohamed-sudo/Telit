@@ -177,7 +177,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         sleep(self.secs_befr_send)
         # self.myMessage = "Hello 2025"
         # self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.myMessage+self.CTRL_Z,"OK")
-        self.new_sensor_data = dict(itertools.islice(sensor_data.items(), 10))
+        self.new_sensor_data = dict(itertools.islice(sensor_data.items(), 8))
         print("len(self.new_sensor_data)", len(self.new_sensor_data))
 
         # sensor_data = dict()
@@ -186,8 +186,8 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         # self.new_sensor_data = json.dumps(sensor_data) + self.CTRL_Z
         
         # sensor_data = {"ID": 12, "Battery": 90}
-        # sensor_data = {'timestamp': 1637243564699,
-        #                'name': 'cycle2-07',
+        # sensor_data = {'tim': 1637243564699,
+        #                'nm': 'cycle2-07',
         #                'tx_pwr': 1.0,
         #                'mode': 'mode',
         #                'cpu_tmp': 65.7,
@@ -210,8 +210,8 @@ def initialize_sensor_data():
     global sensor_data
     sensor_data = dict()
     millis = int(round(time.time() * 1000))
-    sensor_data['timestamp'] = millis
-    sensor_data['name'] = socket.gethostname()
+    sensor_data['tim'] = millis
+    sensor_data['nm'] = socket.gethostname()
 
 
 """ add features such as CPU Temperature/no of running processes/CPU 
