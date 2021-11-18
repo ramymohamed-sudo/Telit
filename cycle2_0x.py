@@ -196,7 +196,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         #                'btr_vol': 4148,
         #                'btr_tmp': 40,
         #                'hrs_sinc_chrg': 2,
-        #                'chrg_cycl': '1'}
+        #                'chrg_cycl': '2'}
 
         self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{self.new_sensor_data}\""+self.CTRL_Z,"OK") # this also works well 
         # self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.new_sensor_data,"OK") 
