@@ -179,14 +179,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         sensor_data = dict()
         sensor_data['ID'] = 12
         sensor_data['Battery'] = 90.0
-        sensor_data['name'] = 90.0
-        sensor_data['tx_pwr'] = 90.0
-        sensor_data['nb_iot_mode'] = 90.0
-        sensor_data['cpu_temperature'] = 90.0
-        sensor_data['battery_milli_voltage'] = 90.0
-        sensor_data['battery_temperature'] = 90.0
-        sensor_data['hours_since_fully_charged'] = 90.0
-        sensor_data['charge_cycle'] = 90.0
+        new_sensor_data = json.dumps(sensor_data)
         # sensor_data = {"ID": 12, "Battery": 90}
         # sensor_data = {'timestamp': 1637243564699,
         #                'name': 'cycle2-07',
@@ -199,7 +192,8 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         #                'hours_since_fully_charged': 2,
         #                'charge_cycle': '1'}
 
-        self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{sensor_data}\""+self.CTRL_Z,"OK") # this also works well 
+        # self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{sensor_data}\""+self.CTRL_Z,"OK") # this also works well 
+        self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{new_sensor_data}\""+self.CTRL_Z,"OK")
 
     def mqtt_close(self):
         self.sendATComm("AT#MQDISC=1","OK")
