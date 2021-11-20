@@ -197,7 +197,7 @@ iot_is_used = True     # True
 sensor_data = dict()
 node = IoTMqtt()
 node.setupGPIO()
-no_of_iter = 2
+no_of_iter = 20
 i = 1
 
 
