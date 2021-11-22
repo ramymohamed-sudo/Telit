@@ -42,7 +42,7 @@ class WifiMqtt(mqtt.Client):
     @staticmethod   # or self.on_connect = self.onconnect
     def on_connect(xxx, userdata, flags, rc):  # onconnect()
         if rc == 0:
-            print("WifiMqtt is connected to the broker .....")
+            print("WifiMqtt is connected to the broker .......")
             print("\n")
             global connected
             connected = True
@@ -214,7 +214,7 @@ iot_is_used = False     # True
 sensor_data = dict()
 node = IoTMqtt()
 node.setupGPIO()
-no_of_iter = 2
+no_of_iter = 3
 i = 1
 
 
