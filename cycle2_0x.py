@@ -277,7 +277,7 @@ iot_is_used = False
 sensor_data = dict()
 node = IoTMqtt()
 node.setupGPIO()
-no_of_iter = 3
+no_of_iter = 2
 i = 1
 
 """ Telit is enabled by default (double check "ls /dev")- maybe assert """
