@@ -15,6 +15,7 @@ import sys
 import flask
 import socket
 from re import search
+from processor import getCPUtemperature, getRAMinfo, getCPUuse, getDiskSpace
 
 
 connected = False
@@ -134,26 +135,24 @@ def initialize_sensor_data():
     sensor_data['timestamp'] = millis
     sensor_data['name'] = socket.gethostname()
 
-""" add features such as CPU Temperature/no of running processes/CPU
-and RAM utilization """
-def cpu_temp_no_of_process_ram_utilization():
-    pass
+""" features such as no of running processes/ # Telit or BG96 """
+def cpu_temp_process_ram_utilization():
+    # CPU_temp = float(getCPUtemperature())
+    # CPU_use = float(getCPUuse())
+    # RAM_stats = getRAMinfo()
+    # DISK_stats = getDiskSpace()
+    # RAM_use = round(int(RAM_stats[1]) / 1000,1)
+    # DISK_perc = DISK_stats[3]
+    sensor_data['CPU_temp'] = float(getCPUtemperature())
+    sensor_data['CPU_use'] = float(getCPUuse())
+    sensor_data['RAM_use'] = round(int(getRAMinfo()[1]) / 1000,1)
+    sensor_data['DISK_perc'] = getDiskSpace()[3]
+    WiFi_ssd = str(subprocess.check_output('iwgetid', shell=True))
+    if search('HUAWEI', WiFi_ssd):
+        sensor_data['WiFi'] = True
+    else:
+        sensor_data['WiFi'] = False
 
-
-""" BG96 parameters reading"""
-def update_BG_values():
-    sensor_data['tx_pwr'] = 1.0
-    sensor_data['nb_iot_mode'] = 'mode'
-    sensor_data['humidity'] = str(round(node.readHum(), 2))
-    sensor_data['temperature'] = str(round(node.readTemp(), 2))
-    # sensor_data['light'] = light
-    sensor_data['acceleration_x'] = 0.0  # str(node.readAccel())[0]
-    sensor_data['acceleration_y'] = 1.1  # str(node.readAccel())[1]
-    sensor_data['acceleration_z'] = 2.2  # str(node.readAccel())[2]
-    sensor_data['adc0'] = str(node.readAdc(0))
-    sensor_data['adc1'] = str(node.readAdc(1))
-    sensor_data['adc2'] = str(node.readAdc(2))
-    sensor_data['adc3'] = str(node.readAdc(3))
 
 """ Raspberry PI parameters reading"""
 def raspb_pi_update_values():
@@ -163,8 +162,26 @@ def raspb_pi_update_values():
     # RX/TX and processing on BG96
     # looking for intergrated sensors as one part on chip
 
+
+
+""" BG96 parameters reading"""
+def update_BG_values():
+    sensor_data['tx_pwr'] = 1.0
+    sensor_data['nb_iot_mode'] = 'mode'
+    # sensor_data['humidity'] = str(round(node.readHum(), 2))
+    # sensor_data['temperature'] = str(round(node.readTemp(), 2))
+    # sensor_data['light'] = light
+    # sensor_data['acceleration_x'] = 0.0  # str(node.readAccel())[0]
+    # sensor_data['acceleration_y'] = 1.1  # str(node.readAccel())[1]
+    # sensor_data['acceleration_z'] = 2.2  # str(node.readAccel())[2]
+    # sensor_data['adc0'] = str(node.readAdc(0))
+    # sensor_data['adc1'] = str(node.readAdc(1))
+    # sensor_data['adc2'] = str(node.readAdc(2))
+    # sensor_data['adc3'] = str(node.readAdc(3))
+
 """ Battery parameters reading"""
 def battery_update_values():
+    # use try/except here please
     status = pijuice.status.GetStatus()
     key, value = next(iter(status.items()))
     if key != 'error':
@@ -190,14 +207,14 @@ def main():
     # data = ','.join(row)
     initialize_sensor_data()
     update_BG_values()
-    raspb_pi_update_values()
+    cpu_temp_process_ram_utilization()
     battery_update_values()
 
-iot_is_used = True     # True
+iot_is_used = False     # True
 sensor_data = dict()
 node = IoTMqtt()
 node.setupGPIO()
-no_of_iter = 20
+no_of_iter = 2
 i = 1
 
 
@@ -277,3 +294,4 @@ if __name__ == "__main__":
                 client.on_publish_message(data_frame_json)
                 sleep(5)
                 i += 1
+
