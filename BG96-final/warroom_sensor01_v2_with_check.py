@@ -219,12 +219,13 @@ i = 1
 
 
 """ The lines below should be uncommented for real scenarios """
-node.disable()
-sleep(5)
-node.enable()
-sleep(5)
-node.powerUp()     # we might need a condition to check it is powered up
-sleep(10)
+if iot_is_used:
+    node.disable()
+    sleep(5)
+    node.enable()
+    sleep(5)
+    node.powerUp()     # we might need a condition to check it is powered up
+    sleep(10)
 
 if __name__ == "__main__":
 
