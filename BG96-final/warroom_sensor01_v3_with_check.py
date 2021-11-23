@@ -2,8 +2,9 @@
 
 from pijuice import PiJuice
 import IoTSixfab
+import processor
 from time import sleep
-from subprocess import *
+import subprocess 
 import time
 import json
 import paho.mqtt.client as mqtt
@@ -153,7 +154,7 @@ if iot_is_used:
     sleep(10)
 
 if __name__ == "__main__":
-    sensor_data = subprocess.SensorData()
+    sensor_data = processor.SensorData()
 
     if iot_is_used:
         registered = False
