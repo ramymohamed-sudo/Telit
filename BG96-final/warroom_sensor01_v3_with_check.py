@@ -3,7 +3,7 @@
 from pijuice import PiJuice
 import IoTSixfab
 from time import sleep
-import subprocess
+from subprocess import *
 import time
 import json
 import paho.mqtt.client as mqtt
