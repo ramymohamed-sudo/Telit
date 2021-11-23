@@ -207,7 +207,7 @@ def main():
     # data = ','.join(row)
     initialize_sensor_data()
     update_BG_values()
-    # cpu_temp_process_ram_utilization()
+    cpu_temp_process_ram_utilization()
     battery_update_values()
 
 iot_is_used = False     # True
