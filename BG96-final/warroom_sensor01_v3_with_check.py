@@ -119,7 +119,7 @@ class IoTMqtt(IoTSixfab.IoT):
         # AT+QMTPUB=<tcpconnectID>,<msgID>,<qos>,<retain>,"<topic>"
         # self.sendATComm("AT+QMTPUB=0,0,0,0,"+self.topic,">")
         self.sendATComm("AT+QMTPUB=0,0,0,0,\"5G-Solutions\"",">")
-        print(f"Waiting {self.no_of_secs_before_send_msg} seconds before sending a message....")
+        # print(f"Waiting {self.no_of_secs_before_send_msg} seconds before sending a message....")
         sleep(self.no_of_secs_before_send_msg)
         self.data_frame_json = message
         self.sendATComm(self.data_frame_json+self.CTRL_Z,"+QMTPUB: 0,0,0")
