@@ -24,7 +24,7 @@ pijuice = PiJuice(1, 0x14)
 
 
 # name = name, inherit from two classes :) 
-class WifiMqtt(mqtt.Client, subprocess.SensorData):
+class WifiMqtt(mqtt.Client):
     def __init__(self,
                  broker_address='9.162.161.90',
                  keepAlive=60,
