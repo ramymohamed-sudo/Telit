@@ -38,6 +38,12 @@ class SensorData():
     def update_BG_values(self):
         self.sensor_data['txp'] = 1.0       # ??
         self.sensor_data['iot'] = 'mode'    # ??
+    
+
+    # """ BG96 parameters reading"""
+    def update_Telit_values(self):
+        self.sensor_data['txp'] = 1.0       # ??
+        self.sensor_data['iot'] = 'mode'    # ??
 
     # """ Battery parameters reading"""
     def battery_update_values(self):

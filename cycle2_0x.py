@@ -210,69 +210,14 @@ class IoTMqtt(IoTSixfabTelit.IoT):
     def subs_topic(self):
         self.sendATComm("AT#MQSUB=1,\"5G-Solutions\"","OK")
 
-def initialize_sensor_data():
-    global sensor_data
-    sensor_data = dict()
-    millis = int(round(time.time() * 1000))
-    sensor_data['tim'] = millis
-    sensor_data['nm'] = socket.gethostname()
-
-
-""" add features such as CPU Temperature/no of running processes/CPU 
-and RAM utilization """
-def cpu_temp_no_of_process_ram_utilization():
-    pass
-
-""" Telit parameters reading"""
-def update_Telit_values():
-    sensor_data['tx_pwr'] = 1.0
-    sensor_data['mode'] = 'mode'
-    # sensor_data['humidity'] = str(round(node.readHum(), 2))
-    # sensor_data['temperature'] = str(round(node.readTemp(), 2))
-    # sensor_data['light'] = light
-    # sensor_data['acceleration_x'] = 0.0  
-    # sensor_data['acceleration_y'] = 1.1  
-    # sensor_data['acceleration_z'] = 2.2
-
-""" Raspberry PI parameters reading"""
-def raspb_pi_update_values():
-    cpu_temp = subprocess.check_output('vcgencmd measure_temp', shell=True)
-    sensor_data['cpu_tmp'] = float(str(cpu_temp)[7:11])
-    # memory usage/ CPU usage of the R-PI as well
-    # RX/TX and processing on BG96
-    # looking for intergrated sensors as one part on chip
-    # 2021-  features such as CPU Temperature/no of 
-    # running processes/CPU and RAM utilization
-
-""" Battery parameters reading - Try try: or asset or eval """
-def battery_update_values():
-    status = pijuice.status.GetStatus()
-    key, value = next(iter(status.items()))
-    if key != 'error':
-        sensor_data['btr_lvl'] = pijuice.status.GetChargeLevel()['data']
-        sensor_data['btr_vol'] = pijuice.status.GetBatteryVoltage()['data']
-        sensor_data['btr_tmp'] = pijuice.status.GetBatteryTemperature()['data']
-        sensor_data['hrs_sinc_chrg'] = 2    # env.variables from IFTT script
-        sensor_data['chrg_cycl'] = '1'
-        """ Battery methods to enable/disable charging """
-        # pijuice.status.GetStatus()
-        # pijuice.status.GetChargeLevel()
-        # pijuice.status.GetFaultStatus()
-        # pijuice.status.GetBatteryTemperature()
-        # pijuice.status.GetChargeLevel()
-    else: 
-        sensor_data['btr_lvl'] = 90.0    # try None and check if postgres accepts it
-        sensor_data['btr_vol'] = 30.0   # try None
-        sensor_data['btr_tmp'] = 18.0    # try None
-        sensor_data['hrs_sinc_chrg'] = 2     # try None
-        sensor_data['chrg_cycl'] = '1'    # try None
 
 def main():
-    # data = ','.join(row)
-    initialize_sensor_data()
-    update_Telit_values()
-    raspb_pi_update_values()
-    battery_update_values()
+    # initialize_sensor_data()
+    sensor_data.timestamp()
+    sensor_data.update_Telit_values()
+    sensor_data.cpu_temp_process_ram_utilization()
+    sensor_data.battery_update_values()
+
 
 iot_is_used = False
 sensor_data = dict()
@@ -282,12 +227,15 @@ no_of_iter = 2
 i = 1
 
 """ Telit is enabled by default (double check "ls /dev")- maybe assert """
-# node.disable()
-time.sleep(1)
-# node.enable()
-time.sleep(1)
+if iot_is_used:
+    # node.disable()
+    time.sleep(1)
+    # node.enable()
+    time.sleep(1)
 
 if __name__ == "__main__":
+    sensor_data = processor.SensorData()
+
     if iot_is_used:
         registered = False
         no_of_reg_loops = 50    # 50
@@ -314,11 +262,10 @@ if __name__ == "__main__":
             while i <= no_of_iter:
                 print(f"iteration number {i}")
                 main()
-                print(f"sensor_data is:\n {sensor_data}")
-                # data_frame_json = json.dumps(sensor_data, indent=4)
-                # node.mqtt_publish(data_frame_json)
+                data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
+                print(f"sensor_data is:\n {data_frame_json}")
                 print("before node.mqtt_publish()")
-                node.mqtt_publish()
+                node.mqtt_publish(message=data_frame_json)
                 print("after node.mqtt_publish()")
                 # node.mqtt_close()
                 sleep(1)
@@ -341,7 +288,7 @@ if __name__ == "__main__":
             while i <= no_of_iter:
                 print(f"iteration number {i}")
                 main()
-                data_frame_json = json.dumps(sensor_data, indent=4)
+                data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
                 client.publish(client.topic, data_frame_json)
                 # client.publish(topic,json.loads(str(row)))
                 client.on_publish_message(data_frame_json)
