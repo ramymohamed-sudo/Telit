@@ -10,7 +10,6 @@ import time
 import os
 import socket
 from re import search
-from processor import getCPUtemperature, getRAMinfo, getCPUuse, getDiskSpace
 
 
 class SensorData():
