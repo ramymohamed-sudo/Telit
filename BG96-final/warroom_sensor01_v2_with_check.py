@@ -146,7 +146,7 @@ def cpu_temp_process_ram_utilization():
     sensor_data['cpu_temp'] = float(getCPUtemperature())
     sensor_data['cpu_use'] = float(getCPUuse())
     sensor_data['ram_use'] = round(int(getRAMinfo()[1]) / 1000,1)
-    sensor_data['disk_perc'] = getDiskSpace()[3]
+    sensor_data['disk_perc'] = float(getDiskSpace()[3].replace("%", ""))    # getDiskSpace()[3]
     WiFi_ssd = str(subprocess.check_output('iwgetid', shell=True))
     if search('HUAWEI', WiFi_ssd):
         sensor_data['wifi'] = True
