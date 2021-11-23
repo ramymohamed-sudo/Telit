@@ -5,7 +5,6 @@ No built-in sensors witht the Sixfab HAT -
 Remember for Pijuice HAT, there was a function to stop the battery from being charged (if needed)
 """
 
-from pijuice import PiJuice
 import BG96final.processor as processor
 import IoTSixfabTelit
 from time import sleep
@@ -26,7 +25,6 @@ import itertools
 
 connected = False
 MessageReceived = False
-pijuice = PiJuice(1, 0x14)
 
 
 class WifiMqtt(mqtt.Client):
