@@ -137,21 +137,21 @@ def initialize_sensor_data():
 
 """ features such as no of running processes/ # Telit or BG96 """
 def cpu_temp_process_ram_utilization():
-    # CPU_temp = float(getCPUtemperature())
-    # CPU_use = float(getCPUuse())
-    # RAM_stats = getRAMinfo()
-    # DISK_stats = getDiskSpace()
-    # RAM_use = round(int(RAM_stats[1]) / 1000,1)
-    # DISK_perc = DISK_stats[3]
-    sensor_data['CPU_temp'] = float(getCPUtemperature())
-    sensor_data['CPU_use'] = float(getCPUuse())
-    sensor_data['RAM_use'] = round(int(getRAMinfo()[1]) / 1000,1)
-    sensor_data['DISK_perc'] = getDiskSpace()[3]
+    # cpu_temp = float(getCPUtemperature())
+    # cpu_use = float(getCPUuse())
+    # ram_stats = getRAMinfo()
+    # disk_stats = getDiskSpace()
+    # ram_use = round(int(ram_stats[1]) / 1000,1)
+    # disk_perc = disk_stats[3]
+    sensor_data['cpu_temp'] = float(getCPUtemperature())
+    sensor_data['cpu_use'] = float(getCPUuse())
+    sensor_data['ram_use'] = round(int(getRAMinfo()[1]) / 1000,1)
+    sensor_data['disk_perc'] = getDiskSpace()[3]
     WiFi_ssd = str(subprocess.check_output('iwgetid', shell=True))
     if search('HUAWEI', WiFi_ssd):
-        sensor_data['WiFi'] = True
+        sensor_data['wifi'] = True
     else:
-        sensor_data['WiFi'] = False
+        sensor_data['wifi'] = False
 
 
 """ Raspberry PI parameters reading"""
