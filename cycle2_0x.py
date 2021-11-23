@@ -176,7 +176,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         sleep(self.secs_befr_send)
         # self.myMessage = "Hello 2025"
         # self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.myMessage+self.CTRL_Z,"OK")
-        new_sensor_data = dict(itertools.islice(data.items(), 9))
+        new_sensor_data = dict(itertools.islice(data.items(), 11))
         print("new_sensor_data........\n", new_sensor_data)
 
         # sensor_data = dict()
