@@ -6,6 +6,7 @@ Remember for Pijuice HAT, there was a function to stop the battery from being ch
 """
 
 from pijuice import PiJuice
+import BG96final.processor as processor
 import IoTSixfabTelit
 from time import sleep
 import subprocess
