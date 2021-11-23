@@ -24,7 +24,7 @@ pijuice = PiJuice(1, 0x14)
 
 
 # name = name, inherit from two classes :) 
-class WifiMqtt(mqtt.Client):
+class WifiMqtt(mqtt.Client, subprocess.SensorData):
     def __init__(self,
                  broker_address='9.162.161.90',
                  keepAlive=60,
@@ -129,95 +129,20 @@ class IoTMqtt(IoTSixfab.IoT):
         self.sendATComm("AT+QMTCLOSE=0","+QMTCLOSE: 0")
 
 
-def initialize_sensor_data():
-    global sensor_data
-    sensor_data = dict()
-    millis = int(round(time.time() * 1000))
-    sensor_data['ts'] = millis
-    sensor_data['na'] = socket.gethostname()
-
-""" features such as no of running processes/ # Telit or BG96 """
-def cpu_temp_process_ram_utilization():
-    # cpu_temp = float(getCPUtemperature())
-    # cpu_use = float(getCPUuse())
-    # ram_stats = getRAMinfo()
-    # disk_stats = getDiskSpace()
-    # ram_use = round(int(ram_stats[1]) / 1000,1)
-    # disk_perc = disk_stats[3]
-    sensor_data['cpt'] = float(getCPUtemperature())
-    sensor_data['cpu'] = float(getCPUuse())
-    sensor_data['ru'] = round(int(getRAMinfo()[1]) / 1000,1)
-    sensor_data['dp'] = float(getDiskSpace()[3].replace("%", ""))    # getDiskSpace()[3]
-    WiFi_ssd = str(subprocess.check_output('iwgetid', shell=True))
-    if search('HUAWEI', WiFi_ssd):
-        sensor_data['wf'] = True
-    else:
-        sensor_data['wf'] = False
-
-
-""" Raspberry PI parameters reading"""
-def raspb_pi_update_values():
-    cpu_temp = subprocess.check_output('vcgencmd measure_temp', shell=True)
-    sensor_data['cpu_temperature'] = float(str(cpu_temp)[7:11])
-    # memory usage/ CPU usage of the R-PI as well
-    # RX/TX and processing on BG96
-    # looking for intergrated sensors as one part on chip
-
-
-
-""" BG96 parameters reading"""
-def update_BG_values():
-    sensor_data['txp'] = 1.0
-    sensor_data['iot'] = 'mode'
-    # sensor_data['humidity'] = str(round(node.readHum(), 2))
-    # sensor_data['temperature'] = str(round(node.readTemp(), 2))
-    # sensor_data['light'] = light
-    # sensor_data['acceleration_x'] = 0.0  # str(node.readAccel())[0]
-    # sensor_data['acceleration_y'] = 1.1  # str(node.readAccel())[1]
-    # sensor_data['acceleration_z'] = 2.2  # str(node.readAccel())[2]
-    # sensor_data['adc0'] = str(node.readAdc(0))
-    # sensor_data['adc1'] = str(node.readAdc(1))
-    # sensor_data['adc2'] = str(node.readAdc(2))
-    # sensor_data['adc3'] = str(node.readAdc(3))
-
-""" Battery parameters reading"""
-def battery_update_values():
-    # use try/except here please
-    status = pijuice.status.GetStatus()
-    key, value = next(iter(status.items()))
-    if key != 'error':
-        sensor_data['bl'] = pijuice.status.GetChargeLevel()['data']
-        sensor_data['bmv'] = pijuice.status.GetBatteryVoltage()['data']
-        sensor_data['bt'] = pijuice.status.GetBatteryTemperature()['data']
-        sensor_data['hsc'] = 2    # env.variables from IFTT script
-        sensor_data['cc'] = '1'
-        """ Battery methods to enable/disable charging """
-        # pijuice.status.GetStatus()
-        # pijuice.status.GetChargeLevel()
-        # pijuice.status.GetFaultStatus()
-        # pijuice.status.GetBatteryTemperature()
-        # pijuice.status.GetChargeLevel()
-    else: 
-        sensor_data['bl'] = 90.0
-        sensor_data['bmv'] = 30.0
-        sensor_data['bt'] = 18.0
-        sensor_data['hsc'] = 2
-        sensor_data['cc'] = '1'
-
 def main():
-    # data = ','.join(row)
-    initialize_sensor_data()
-    update_BG_values()
-    cpu_temp_process_ram_utilization()
-    battery_update_values()
+    # initialize_sensor_data()
+    sensor_data.timestamp()
+    sensor_data.update_BG_values()
+    sensor_data.cpu_temp_process_ram_utilization()
+    sensor_data.battery_update_values()
+
+    
 
 iot_is_used = False     # True
-sensor_data = dict()
 node = IoTMqtt()
 node.setupGPIO()
 no_of_iter = 3
 i = 1
-
 
 """ The lines below should be uncommented for real scenarios """
 if iot_is_used:
@@ -225,10 +150,11 @@ if iot_is_used:
     sleep(5)
     node.enable()
     sleep(5)
-    node.powerUp()     # we might need a condition to check it is powered up
+    node.powerUp()     # a condition to check it is powered up!
     sleep(10)
 
 if __name__ == "__main__":
+    sensor_data = subprocess.SensorData()
 
     if iot_is_used:
         registered = False
@@ -267,7 +193,7 @@ if __name__ == "__main__":
             while i <= no_of_iter:
                 print(f"iteration number {i}")
                 main()
-                data_frame_json = json.dumps(sensor_data, indent=4)
+                data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
                 node.mqtt_publish(data_frame_json)
                 # node.mqtt_close()
                 sleep(1)
@@ -286,11 +212,12 @@ if __name__ == "__main__":
             while not MessageReceived:
                 sleep(0.2)
             client.loop_stop()
+        
         else:
             while i <= no_of_iter:
                 print(f"iteration number {i}")
                 main()
-                data_frame_json = json.dumps(sensor_data, indent=4)
+                data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
                 client.publish(client.topic, data_frame_json)
                 # client.publish(topic,json.loads(str(row)))
                 client.on_publish_message(data_frame_json)
