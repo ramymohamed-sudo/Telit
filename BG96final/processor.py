@@ -13,14 +13,18 @@ from re import search
 
 
 class SensorData():
-    def __init__(self) -> None:
+    def __init__(self, model='Telit') -> None:
         self.sensor_data = dict()
         self.sensor_data['na'] = socket.gethostname()
         self.pijuice = PiJuice(1, 0x14)
+        self.model= model
     
     def timestamp(self):
         millis = int(round(time.time() * 1000))
-        self.sensor_data['ts'] = millis
+        if self.model == 'Telit':
+            self.sensor_data['ts'] = 0
+        else:
+            self.sensor_data['ts'] = millis
 
     # """ features such as no of running processes/ # Telit or BG96 """
     def cpu_temp_process_ram_utilization(self):
