@@ -1,6 +1,6 @@
 
 
-from pijuice import PiJuice
+# from pijuice import PiJuice
 import IoTSixfab
 import processor
 from time import sleep
@@ -20,7 +20,6 @@ from re import search
 
 connected = False
 MessageReceived = False
-pijuice = PiJuice(1, 0x14)
 
 
 # name = name, inherit from two classes :) 

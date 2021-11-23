@@ -16,6 +16,7 @@ class SensorData():
     def __init__(self) -> None:
         self.sensor_data = dict()
         self.sensor_data['na'] = socket.gethostname()
+        self.pijuice = PiJuice(1, 0x14)
     
     def timestamp(self):
         millis = int(round(time.time() * 1000))
@@ -41,20 +42,20 @@ class SensorData():
     # """ Battery parameters reading"""
     def battery_update_values(self):
         # use try/except here please
-        status = pijuice.status.GetStatus()
+        status = self.pijuice.status.GetStatus()
         key, value = next(iter(status.items()))
         if key != 'error':
-            self.sensor_data['bl'] = pijuice.status.GetChargeLevel()['data']
-            self.sensor_data['bmv'] = pijuice.status.GetBatteryVoltage()['data']
-            self.sensor_data['bt'] = pijuice.status.GetBatteryTemperature()['data']
+            self.sensor_data['bl'] = self.pijuice.status.GetChargeLevel()['data']
+            self.sensor_data['bmv'] = self.pijuice.status.GetBatteryVoltage()['data']
+            self.sensor_data['bt'] = self.pijuice.status.GetBatteryTemperature()['data']
             self.sensor_data['hsc'] = 2    # env.variables from IFTT script
             self.sensor_data['cc'] = '1'
             """ Battery methods to enable/disable charging """
-            # pijuice.status.GetStatus()
-            # pijuice.status.GetChargeLevel()
-            # pijuice.status.GetFaultStatus()
-            # pijuice.status.GetBatteryTemperature()
-            # pijuice.status.GetChargeLevel()
+            # self.pijuice.status.GetStatus()
+            # self.pijuice.status.GetChargeLevel()
+            # self.pijuice.status.GetFaultStatus()
+            # self.pijuice.status.GetBatteryTemperature()
+            # self.pijuice.status.GetChargeLevel()
         else: 
             self.sensor_data['bl'] = None
             self.sensor_data['bmv'] = None
