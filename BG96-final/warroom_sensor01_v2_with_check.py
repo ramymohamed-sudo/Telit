@@ -132,8 +132,8 @@ def initialize_sensor_data():
     global sensor_data
     sensor_data = dict()
     millis = int(round(time.time() * 1000))
-    sensor_data['timestamp'] = millis
-    sensor_data['name'] = socket.gethostname()
+    sensor_data['ts'] = millis
+    sensor_data['na'] = socket.gethostname()
 
 """ features such as no of running processes/ # Telit or BG96 """
 def cpu_temp_process_ram_utilization():
@@ -143,15 +143,15 @@ def cpu_temp_process_ram_utilization():
     # disk_stats = getDiskSpace()
     # ram_use = round(int(ram_stats[1]) / 1000,1)
     # disk_perc = disk_stats[3]
-    sensor_data['cpu_temp'] = float(getCPUtemperature())
-    sensor_data['cpu_use'] = float(getCPUuse())
-    sensor_data['ram_use'] = round(int(getRAMinfo()[1]) / 1000,1)
-    sensor_data['disk_perc'] = float(getDiskSpace()[3].replace("%", ""))    # getDiskSpace()[3]
+    sensor_data['cpt'] = float(getCPUtemperature())
+    sensor_data['cpu'] = float(getCPUuse())
+    sensor_data['ru'] = round(int(getRAMinfo()[1]) / 1000,1)
+    sensor_data['dp'] = float(getDiskSpace()[3].replace("%", ""))    # getDiskSpace()[3]
     WiFi_ssd = str(subprocess.check_output('iwgetid', shell=True))
     if search('HUAWEI', WiFi_ssd):
-        sensor_data['wifi'] = True
+        sensor_data['wf'] = True
     else:
-        sensor_data['wifi'] = False
+        sensor_data['wf'] = False
 
 
 """ Raspberry PI parameters reading"""
@@ -166,8 +166,8 @@ def raspb_pi_update_values():
 
 """ BG96 parameters reading"""
 def update_BG_values():
-    sensor_data['tx_pwr'] = 1.0
-    sensor_data['nb_iot_mode'] = 'mode'
+    sensor_data['txp'] = 1.0
+    sensor_data['iot'] = 'mode'
     # sensor_data['humidity'] = str(round(node.readHum(), 2))
     # sensor_data['temperature'] = str(round(node.readTemp(), 2))
     # sensor_data['light'] = light
@@ -185,11 +185,11 @@ def battery_update_values():
     status = pijuice.status.GetStatus()
     key, value = next(iter(status.items()))
     if key != 'error':
-        sensor_data['battery_level'] = pijuice.status.GetChargeLevel()['data']
-        sensor_data['battery_milli_voltage'] = pijuice.status.GetBatteryVoltage()['data']
-        sensor_data['battery_temperature'] = pijuice.status.GetBatteryTemperature()['data']
-        sensor_data['hours_since_fully_charged'] = 2    # env.variables from IFTT script
-        sensor_data['charge_cycle'] = '1'
+        sensor_data['bl'] = pijuice.status.GetChargeLevel()['data']
+        sensor_data['bmv'] = pijuice.status.GetBatteryVoltage()['data']
+        sensor_data['bt'] = pijuice.status.GetBatteryTemperature()['data']
+        sensor_data['hsc'] = 2    # env.variables from IFTT script
+        sensor_data['cc'] = '1'
         """ Battery methods to enable/disable charging """
         # pijuice.status.GetStatus()
         # pijuice.status.GetChargeLevel()
@@ -197,11 +197,11 @@ def battery_update_values():
         # pijuice.status.GetBatteryTemperature()
         # pijuice.status.GetChargeLevel()
     else: 
-        sensor_data['battery_level'] = 90.0
-        sensor_data['battery_milli_voltage'] = 30.0
-        sensor_data['battery_temperature'] = 18.0
-        sensor_data['hours_since_fully_charged'] = 2
-        sensor_data['charge_cycle'] = '1'
+        sensor_data['bl'] = 90.0
+        sensor_data['bmv'] = 30.0
+        sensor_data['bt'] = 18.0
+        sensor_data['hsc'] = 2
+        sensor_data['cc'] = '1'
 
 def main():
     # data = ','.join(row)
