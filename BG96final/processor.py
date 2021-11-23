@@ -34,9 +34,9 @@ class SensorData():
         self.sensor_data['dp'] = float(self.getDiskSpace()[3].replace("%", ""))    # getDiskSpace()[3]
         WiFi_ssd = str(subprocess.check_output('iwgetid', shell=True))
         if search(r'(HUAWEI|IBM)', WiFi_ssd):
-            self.sensor_data['wf'] = True
+            self.sensor_data['wf'] = 1
         else:
-            self.sensor_data['wf'] = False
+            self.sensor_data['wf'] = 0
 
     # """ BG96 parameters reading"""
     def update_BG_values(self):
