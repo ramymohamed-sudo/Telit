@@ -46,13 +46,13 @@ class WifiMqtt(mqtt.Client):
     @staticmethod   # or self.on_connect = self.onconnect
     def on_connect(xxx, userdata, flags, rc):  # onconnect()
         if rc == 0:
-            print("WifiMqtt is connected to the broker .....")
+            print("WifiMqtt is attached to the broker .....")
             print("\n")
             global connected
             connected = True
             # client.subscribe(topic)
         else:
-            print("WifiMqtt is not connected")
+            print("WifiMqtt is not attached")
 
     @staticmethod
     def on_message(xxx, xxr, message):  # onmessage()
@@ -159,7 +159,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
             self.mqtt_connect()
 
         if search('#MQCONN: 1,1', mqtt_connect_status):
-            print("The MQTT connection is now open and connected")
+            print("The MQTT connection is now open and attached")
 
         elif search('#MQCONN: 1,2', mqtt_connect_status):
             print("Please restart the module and exit code as connection status is 2")
@@ -171,19 +171,17 @@ class IoTMqtt(IoTSixfabTelit.IoT):
             sys.exit()
 
 
-    def mqtt_publish(self, message=None):
+    def mqtt_publish(self, data=None):
         print(f"Waiting {self.secs_befr_send} seconds before sending sensor data....")
         sleep(self.secs_befr_send)
         # self.myMessage = "Hello 2025"
         # self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.myMessage+self.CTRL_Z,"OK")
-        self.new_sensor_data = dict(itertools.islice(sensor_data.items(), 6))
-        print("self.new_sensor_data........\n", self.new_sensor_data)
-        # print("len(json.dumps(self.new_sensor_data))", len(json.dumps(self.new_sensor_data)))
+        new_sensor_data = dict(itertools.islice(data.items(), 6))
+        print("new_sensor_data........\n", new_sensor_data)
 
         # sensor_data = dict()
         # sensor_data['ID'] = 12
         # sensor_data['Battery'] = 90.0
-        # self.new_sensor_data = json.dumps(sensor_data) + self.CTRL_Z
         
         # sensor_data = {"ID": 12, "Battery": 90}
         # sensor_data = {'tim': 1637243564699,
@@ -197,9 +195,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         #                'hrs_sinc_chrg': 2,
         #                'chrg_cycl': '2'}
 
-        self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{self.new_sensor_data}\""+self.CTRL_Z,"OK") # this also works well 
-        # self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.new_sensor_data,"OK") 
-        # self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.new_sensor_data,"OK")
+        self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{new_sensor_data}\""+self.CTRL_Z,"OK") # this also works well 
         # self.sendATComm(self.data_frame_json+self.CTRL_Z,"+QMTPUB: 0,0,0")
         
     def mqtt_close(self):
@@ -217,7 +213,7 @@ def main():
     sensor_data.battery_update_values()
 
 
-iot_is_used = False
+iot_is_used = True
 sensor_data = dict()
 node = IoTMqtt()
 node.setupGPIO()
@@ -260,10 +256,10 @@ if __name__ == "__main__":
             while i <= no_of_iter:
                 print(f"iteration number {i}")
                 main()
-                data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
+                data_frame_json = sensor_data.sensor_data   # json.dumps(sensor_data.sensor_data, indent=4)
                 print(f"sensor_data is:\n {data_frame_json}")
                 print("before node.mqtt_publish()")
-                node.mqtt_publish(message=data_frame_json)
+                node.mqtt_publish(data=data_frame_json)
                 print("after node.mqtt_publish()")
                 # node.mqtt_close()
                 sleep(1)
