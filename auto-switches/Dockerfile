@@ -2,7 +2,7 @@
 
 FROM python:latest
 RUN apt-get upgrade -y
-RUN apt-get install json -y
+# RUN apt-get install json -y
 WORKDIR /var/lib/python
 
 COPY . .
