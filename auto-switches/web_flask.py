@@ -71,7 +71,7 @@ url_turn_on = urls_turn_on[sensor_id-3]     # -3 as senors start cycle2-03
 url_turn_off = urls_turn_off[sensor_id-3] 
 
 sensor_data = processor.SensorData()
-# iter = 3
+iter = 10
 
 while (True):
     sensor_data.battery_update_values()
