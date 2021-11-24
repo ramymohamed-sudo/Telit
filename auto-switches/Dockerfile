@@ -3,7 +3,8 @@
 FROM python:latest
 RUN apt-get upgrade -y
 # RUN apt-get install json -y
-WORKDIR /var/lib/python
+WORKDIR /usr/local/bin
+#/var/lib/python
 
 COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
