@@ -10,10 +10,15 @@ from flask import Flask
 from flask import request
 import requests
 from time import sleep
-import BG96final.processor as processor
 import socket
 import re
 import sys
+
+try:
+    import BG96final.processor as processor
+except:
+    import processor as processor
+
 
 
 """ Use Flask/Web to see the logs - current battery level and button stautus - while is working """ 
