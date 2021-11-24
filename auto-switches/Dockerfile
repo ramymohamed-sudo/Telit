@@ -3,7 +3,8 @@
 FROM python:latest
 RUN apt-get upgrade -y
 # RUN apt-get install json -y
-WORKDIR /usr/local/bin
+WORKDIR /
+# /usr/local/bin
 #/var/lib/python
 
 COPY . .
