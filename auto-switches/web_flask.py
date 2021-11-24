@@ -36,7 +36,6 @@ except:
 
 
 pload = {"value1": "", "value2": "", "value3": ""}
-sensor_data = processor.SensorData()
 lower_threshold = 50.0
 upper_threshold = 70.0
 # name = sensor_data.sensor_data['na'] = socket.gethostname()   # name
@@ -64,13 +63,14 @@ urls_turn_off = [eval(f"url{i}_turn_off") for i in range(3, 11)]
 
 
 name = socket.gethostname()
-sensor_id = re.findall(r'[\-]\d{2}',name)
+# sensor_id = re.findall(r'[\-]\d{2}',name)
+sensor_id = [int(s) for s in name.split('-') if s.isdigit()][0]
 print("sensor_id", sensor_id)
-sys.exit()
 
 url_turn_on = urls_turn_on[sensor_id-3]     # -3 as senors start cycle2-03
 url_turn_off = urls_turn_off[sensor_id-3] 
 
+sensor_data = processor.SensorData()
 iter = 3
 while (iter > 1):
     sensor_data.battery_update_values()
@@ -83,4 +83,5 @@ while (iter > 1):
     else:
         print(f"Battery level now is {sensor_data.sensor_data['bl']}; between upper and lower thresholds")
     sleep(10)
+
     iter -= 1
