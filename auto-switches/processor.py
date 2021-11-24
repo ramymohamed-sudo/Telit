@@ -42,7 +42,6 @@ class SensorData():
     def update_BG_values(self):
         self.sensor_data['txp'] = 1.0       # tx_pwr
         self.sensor_data['O'] = 'm'    # iot_mode
-    
 
     # """ BG96 parameters reading"""
     def update_Telit_values(self):
@@ -52,28 +51,28 @@ class SensorData():
     # """ Battery parameters reading"""
     def battery_update_values(self):
         # use try/except here please
-        status = self.pijuice.status.GetStatus()
-        key, value = next(iter(status.items()))
-        if key != 'error':
+        try:
+            status = self.pijuice.status.GetStatus()
+            key, value = next(iter(status.items()))
             self.sensor_data['bl'] = self.pijuice.status.GetChargeLevel()['data']
             self.sensor_data['bmv'] = self.pijuice.status.GetBatteryVoltage()['data']
             self.sensor_data['bt'] = self.pijuice.status.GetBatteryTemperature()['data']
             self.sensor_data['hsc'] = 2    # env.variables from IFTT script
             self.sensor_data['cc'] = '1'
+
             """ Battery methods to enable/disable charging """
             # self.pijuice.status.GetStatus()
+            self.charge_status = self.pijuice.status.GetStatus()['data']['powerInput']
+            # {'data': {'isFault': True, 'isButton': False, 'battery': 'NORMAL', 
+            # 'powerInput': 'NOT_PRESENT', 'powerInput5vIo': 'NOT_PRESENT'}, 'error': 'NO_ERROR'}
+
             # self.pijuice.status.GetChargeLevel()
             # self.pijuice.status.GetFaultStatus()
             # self.pijuice.status.GetBatteryTemperature()
             # self.pijuice.status.GetChargeLevel()
-        else: 
-            self.sensor_data['bl'] = None
-            self.sensor_data['bmv'] = None
-            self.sensor_data['bt'] = None
-            self.sensor_data['hsc'] = None
-            self.sensor_data['cc'] = None
+        except:
+            print(f"There is error related to battery:\n {key}")
 
-    # Return CPU temperature as a character string                                      
     def getCPUtemperature(self):
         res = os.popen('vcgencmd measure_temp').readline()
         return(res.replace("temp=","").replace("'C\n",""))
@@ -90,9 +89,8 @@ class SensorData():
             line = p.readline()
             if i==2:
                 return(line.split()[1:4])
-
-    # Return % of CPU used by user as a character string                                
-    def getCPUuse(self):
+                               
+    def getCPUuse(self):    # # Return % of CPU used by user as a character string 
         return(str(os.popen("top -n1 | awk '/Cpu\(s\):/ {print $2}'").readline().strip(\
     )))
 

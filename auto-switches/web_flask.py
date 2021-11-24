@@ -74,14 +74,21 @@ sensor_data = processor.SensorData()
 iter = 3
 while (iter > 1):
     sensor_data.battery_update_values()
+
     if sensor_data.sensor_data['bl'] <= lower_threshold:
-        r = requests.post(url_turn_on, data=pload)
-        print(r.text)
+        if sensor_data.charge_status != 'PRESENT':
+            print(f"the current LOW LOW battery level is {sensor_data.sensor_data['bl']}")
+            r = requests.post(url_turn_on, data=pload)
+            print(r.text)
     elif sensor_data.sensor_data['bl'] > upper_threshold:
-        r = requests.post(url_turn_off, data=pload)
-        print(r.text)
+        if sensor_data.charge_status == 'PRESENT':
+            print(f"the current HIGH HIGH battery level is {sensor_data.sensor_data['bl']}")
+            r = requests.post(url_turn_off, data=pload)
+            print(r.text)
     else:
-        print(f"Battery level now is {sensor_data.sensor_data['bl']}; between upper and lower thresholds")
+        print(f"Battery level now is {sensor_data.sensor_data['bl']} and charging status is {sensor_data.charge_status}")
     sleep(10)
 
     iter -= 1
+
+    # add if condition to check if the switch is open/close or the battery is charging or not
