@@ -80,13 +80,15 @@ while (iter > 1):
             print(f"the current LOW LOW battery level is {sensor_data.sensor_data['bl']}")
             r = requests.post(url_turn_on, data=pload)
             print(r.text)
+        
     elif sensor_data.sensor_data['bl'] > upper_threshold:
         if sensor_data.charge_status == 'PRESENT':
             print(f"the current HIGH HIGH battery level is {sensor_data.sensor_data['bl']}")
             r = requests.post(url_turn_off, data=pload)
             print(r.text)
-    else:
-        print(f"Battery level now is {sensor_data.sensor_data['bl']} and charging status is {sensor_data.charge_status}")
+
+    print(f"Battery level now is {sensor_data.sensor_data['bl']} and charging status is {sensor_data.charge_status}")
+    
     sleep(10)
 
     iter -= 1
