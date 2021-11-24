@@ -2,11 +2,11 @@
 version: '3.4'
 
 services:
-  device-registery:   # this is the container_name
+  auto-switch:
     build: .
     #image: mongo
 
     #volumes:
     #- ./usr/src/app
     ports:
-      - 5002:82
+      - 6007:6007

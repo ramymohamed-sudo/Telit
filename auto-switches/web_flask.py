@@ -71,8 +71,9 @@ url_turn_on = urls_turn_on[sensor_id-3]     # -3 as senors start cycle2-03
 url_turn_off = urls_turn_off[sensor_id-3] 
 
 sensor_data = processor.SensorData()
-iter = 3
-while (iter > 1):
+# iter = 3
+
+while (True):
     sensor_data.battery_update_values()
 
     if sensor_data.sensor_data['bl'] <= lower_threshold:
@@ -90,7 +91,5 @@ while (iter > 1):
     print(f"Battery level now is {sensor_data.sensor_data['bl']} and charging status is {sensor_data.charge_status}")
     
     sleep(10)
-
-    iter -= 1
 
     # add if condition to check if the switch is open/close or the battery is charging or not
