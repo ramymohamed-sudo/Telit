@@ -1,0 +1,12 @@
+
+version: '3.4'
+
+services:
+  device-registery:   # this is the container_name
+    build: .
+    #image: mongo
+
+    #volumes:
+    #- ./usr/src/app
+    ports:
+      - 5002:82
