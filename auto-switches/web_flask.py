@@ -18,9 +18,6 @@ sys.path.append('../')
 import BG96final.processor as processor
 
 
-
-
-
 """ Use Flask/Web to see the logs - current battery level and button stautus - while is working """ 
 # app = Flask(__name__)
 
@@ -64,8 +61,9 @@ urls_turn_off = [eval(f"url{i}_turn_off") for i in range(3, 11)]
 
 name = socket.gethostname()
 # sensor_id = re.findall(r'[\-]\d{2}',name)
-sensor_id = 3   # [int(s) for s in name.split('-') if s.isdigit()][0]
-print("sensor_id", sensor_id)
+sensor_id = [int(s) for s in name.split('-') if s.isdigit()][0]
+print("sensor_id is: ", sensor_id)
+sys.stdout.flush()
 
 url_turn_on = urls_turn_on[sensor_id-3]     # -3 as senors start cycle2-03
 url_turn_off = urls_turn_off[sensor_id-3] 
@@ -79,16 +77,21 @@ while (True):
     if sensor_data.sensor_data['bl'] <= lower_threshold:
         if sensor_data.charge_status != 'PRESENT':
             print(f"the current LOW LOW battery level is {sensor_data.sensor_data['bl']}")
+            sys.stdout.flush()
             r = requests.post(url_turn_on, data=pload)
             print(r.text)
+            sys.stdout.flush()
         
     elif sensor_data.sensor_data['bl'] > upper_threshold:
         if sensor_data.charge_status == 'PRESENT':
             print(f"the current HIGH HIGH battery level is {sensor_data.sensor_data['bl']}")
+            sys.stdout.flush()
             r = requests.post(url_turn_off, data=pload)
             print(r.text)
+            sys.stdout.flush()
 
     print(f"Battery level now is {sensor_data.sensor_data['bl']} and charging status is {sensor_data.charge_status}")
+    sys.stdout.flush()
     
     sleep(10)
 
