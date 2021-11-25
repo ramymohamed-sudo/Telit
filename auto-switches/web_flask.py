@@ -14,8 +14,8 @@ import socket
 import re
 
 import sys
-sys.path.append('../')
-import BG96final.processor as processor
+# sys.path.append('../')
+import processor as processor
 
 
 """ Use Flask/Web to see the logs - current battery level and button stautus - while is working """ 
