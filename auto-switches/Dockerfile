@@ -1,13 +1,26 @@
 
 
-FROM balenalib/raspberry-pi-debian-python:latest
 
-WORKDIR /
+FROM arm32v7/python:3
 
-COPY . .
+WORKDIR /usr/src/app
+
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD [ "python", "./web_flask.py" ]
+COPY . .
+
+CMD [ "python", "./web_flask.py.py" ]
+
+
+# FROM balenalib/raspberry-pi-debian-python:latest
+
+# WORKDIR /
+
+# COPY . .
+# RUN pip install --no-cache-dir -r requirements.txt
+
+# CMD [ "python", "./web_flask.py" ]
 
 # FROM ramyrr/auto-switches_auto-switch
 # # python:latest
