@@ -1,16 +1,25 @@
 
 
 
-FROM arm32v7/python:3
+FROM schranz/armv7hf-debian-python-scipy:0.0.2
 
+RUN apt-get install -y cmake
 WORKDIR /usr/src/app
-
 COPY requirements.txt ./
-# RUN pip install --no-cache-dir -r requirements.txt
-
+RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
-CMD [ "python", "./web_flask.py.py" ]
+
+# FROM arm32v7/python:3
+
+# WORKDIR /usr/src/app
+
+# COPY requirements.txt ./
+# # RUN pip install --no-cache-dir -r requirements.txt
+
+# COPY . .
+
+# CMD [ "python", "./web_flask.py.py" ]
 
 
 # FROM balenalib/raspberry-pi-debian-python:latest
