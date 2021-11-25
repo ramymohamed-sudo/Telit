@@ -3,7 +3,6 @@
 
 FROM schranz/armv7hf-debian-python-scipy:0.0.2
 
-RUN apt-get install -y cmake
 WORKDIR /usr/src/app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
