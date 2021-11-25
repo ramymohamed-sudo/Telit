@@ -11,5 +11,5 @@ services:
 
     #volumes:
     #- ./usr/src/app
-    ports:
-      - 6007:6007
+    # ports:
+    #   - 6007:6007
