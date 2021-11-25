@@ -1,5 +1,5 @@
 
-
+#!/usr/bin/env python3
 # https://help.ifttt.com/hc/en-us/articles/115010230347-Webhooks-service-FAQ
 # for the key https://maker.ifttt.com/use/7exmlYuXrRDcUqCFU5eap
 # https://maker.ifttt.com/trigger/{event}/with/key/{webhooks_key}

@@ -14,7 +14,8 @@ then
 else
     echo "This is a Raspberry-PI ";
     git pull origin master;
-    python3 cycle2_0x.py;
+    chmod 755 ./auto-switches/web_flask.py
+    # python3 cycle2_0x.py;
 
 fi
 
