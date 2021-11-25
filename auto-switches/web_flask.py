@@ -64,7 +64,7 @@ urls_turn_off = [eval(f"url{i}_turn_off") for i in range(3, 11)]
 
 name = socket.gethostname()
 # sensor_id = re.findall(r'[\-]\d{2}',name)
-sensor_id = [int(s) for s in name.split('-') if s.isdigit()][0]
+sensor_id = 3   # [int(s) for s in name.split('-') if s.isdigit()][0]
 print("sensor_id", sensor_id)
 
 url_turn_on = urls_turn_on[sensor_id-3]     # -3 as senors start cycle2-03
