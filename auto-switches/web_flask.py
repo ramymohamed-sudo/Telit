@@ -17,7 +17,7 @@ import sys
 sys.path.append('../')
 import BG96final.processor as processor
 
-sys.exit()
+
 
 
 
