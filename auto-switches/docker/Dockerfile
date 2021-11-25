@@ -8,10 +8,10 @@ RUN apt-get upgrade -y
 RUN apt-get install vim
 RUN mkdir /usr/lib/python3/docker_volume
 
-
 WORKDIR /usr/src/app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip
 COPY . .
 
 RUN python setup.py install

@@ -12,12 +12,12 @@ import requests
 from time import sleep
 import socket
 import re
-import sys
 
-try:
-    import BG96final.processor as processor
-except:
-    import processor as processor
+import sys
+sys.path.append('../')
+import BG96final.processor as processor
+
+sys.exit()
 
 
 
