@@ -5,7 +5,7 @@ FROM balenalib/raspberry-pi-debian-python:latest
 WORKDIR /
 
 COPY . .
-RUN pip install --no-cache-dir -r requirements.txt
+# RUN pip install --no-cache-dir -r requirements.txt
 
 CMD [ "python", "./web_flask.py" ]
 
