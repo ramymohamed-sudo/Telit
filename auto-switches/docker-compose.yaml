@@ -10,6 +10,6 @@ services:
       - NET_RAW
 
     #volumes:
-      - /usr/lib/python3/docker_volume:/usr/lib/python3/docker_volume
+    #  - /usr/lib/python3/docker_volume:/usr/lib/python3/docker_volume
     ports:
       - 6007:6007
