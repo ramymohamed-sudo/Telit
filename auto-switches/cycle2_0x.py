@@ -6,10 +6,10 @@ Remember for Pijuice HAT, there was a function to stop the battery from being ch
 """
 
 
-try:
-    import BG96final.processor as processor
-except:
-    import processor as processor
+# try:
+#     import BG96final.processor as processor
+# except:
+#     import processor as processor
 
 import IoTSixfabTelit
 from time import sleep
@@ -218,7 +218,7 @@ def main():
     sensor_data.battery_update_values()
 
 
-iot_is_used = True
+iot_is_used = False
 sensor_data = dict()
 node = IoTMqtt()
 node.setupGPIO()
@@ -233,6 +233,7 @@ if iot_is_used:
     time.sleep(1)
 
 if __name__ == "__main__":
+    sys.exit()
     sensor_data = processor.SensorData()
 
     if iot_is_used:
