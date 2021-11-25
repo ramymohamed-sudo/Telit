@@ -5,11 +5,11 @@ services:
   auto-switch:
     build: .
     #image: mongo
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
+    # cap_add:
+    #   - NET_ADMIN
+    #   - NET_RAW
 
     #volumes:
     #- ./usr/src/app
-    # ports:
-    #   - 6007:6007
+    ports:
+      - 6007:6007

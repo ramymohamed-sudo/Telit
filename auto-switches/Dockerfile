@@ -1,14 +1,14 @@
 
 
-FROM python:latest
-RUN apt-get upgrade -y
-# RUN apt-get install json -y
-WORKDIR /
-# /usr/local/bin
-#/var/lib/python
+FROM ramyrr/auto-switches_auto-switch
+# python:latest
+# RUN apt-get update -y
+# WORKDIR /
+# /usr/local/bin/python
+#/var/lib/python/python_installed
 
-COPY . .
-RUN pip install --no-cache-dir -r requirements.txt
+# COPY . .
+# RUN pip install --no-cache-dir -r requirements.txt
   
 
 CMD ["python", "./web_flask.py" ]    
