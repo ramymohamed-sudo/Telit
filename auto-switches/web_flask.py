@@ -16,7 +16,7 @@ import re
 
 import sys
 # sys.path.append('../')
-from processor import *
+import processor
 
 
 """ Use Flask/Web to see the logs - current battery level and button stautus - while is working """ 
