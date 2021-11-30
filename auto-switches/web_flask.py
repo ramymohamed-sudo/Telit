@@ -78,9 +78,10 @@ iter = 0
 
 while (True):
     sensor_data.battery_update_values()
+    sensor_data.charge_status
 
     if sensor_data.sensor_data['bl'] <= lower_threshold:
-        print("sensor_data.charge_status", sensor_data.charge_status)
+
         if sensor_data.charge_status != 'PRESENT':
             print(f"the current LOW LOW battery level is {sensor_data.sensor_data['bl']}")
             #sys.stdout.flush()()
@@ -89,7 +90,7 @@ while (True):
             #sys.stdout.flush()()
         
     elif sensor_data.sensor_data['bl'] > upper_threshold:
-        print("sensor_data.charge_status", sensor_data.charge_status)
+
         if sensor_data.charge_status == 'PRESENT':
             print(f"the current HIGH HIGH battery level is {sensor_data.sensor_data['bl']}")
             #sys.stdout.flush()()
