@@ -3,8 +3,8 @@
 
 
 import sys
-from subprocess import call
-call(["Welcome to the world of Robots"], shell=True)
+print("how are you")
+sys.stdout.flush()()
 sys.exit()
 
 
