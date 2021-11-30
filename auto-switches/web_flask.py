@@ -74,7 +74,7 @@ print("url_turn_off", url_turn_off)
 
 
 sensor_data = processor.SensorData()
-iter = 0
+iter = 3
 
 while (True):
     sensor_data.battery_update_values()
