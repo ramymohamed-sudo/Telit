@@ -86,6 +86,7 @@ while (True):
             #sys.stdout.flush()()
             r = requests.post(url_turn_on, data=pload)
             print(r.text)
+            sleep(10)
             #sys.stdout.flush()()
         
     elif sensor_data.sensor_data['bl'] > upper_threshold:
@@ -95,6 +96,7 @@ while (True):
             #sys.stdout.flush()()
             r = requests.post(url_turn_off, data=pload)
             print(r.text)
+            sleep(10)
             #sys.stdout.flush()()
 
     print(f"Battery level now is {sensor_data.sensor_data['bl']} and charging status is {sensor_data.charge_status}")
