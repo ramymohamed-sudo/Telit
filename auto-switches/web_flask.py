@@ -78,7 +78,6 @@ iter = 0
 
 while (True):
     sensor_data.battery_update_values()
-    sensor_data.charge_status
 
     if sensor_data.sensor_data['bl'] <= lower_threshold:
 
