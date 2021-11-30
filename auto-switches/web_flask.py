@@ -1,13 +1,6 @@
 
 
 
-
-import sys
-print("how are you")
-sys.stdout.flush()()
-sys.exit()
-
-
 # https://help.ifttt.com/hc/en-us/articles/115010230347-Webhooks-service-FAQ
 # for the key https://maker.ifttt.com/use/7exmlYuXrRDcUqCFU5eap
 # https://maker.ifttt.com/trigger/{event}/with/key/{webhooks_key}
@@ -25,14 +18,15 @@ import sys
 # sys.path.append('../')
 import processor
 
+print("The code is just started .......")
+sys.stdout.flush()
+
 
 """ Use Flask/Web to see the logs - current battery level and button stautus - while is working """ 
 # app = Flask(__name__)
-
 # @app.route('/')
 # def hello_world():
 #     return 'Hello from flask'
-
 # @app.route('/ifttt', methods=['POST'])
 # def handler():
 #     username = request.get_data()
@@ -41,7 +35,7 @@ import processor
 
 
 pload = {"value1": "", "value2": "", "value3": ""}
-lower_threshold = 50.0
+lower_threshold = 60.0
 upper_threshold = 70.0
 # name = sensor_data.sensor_data['na'] = socket.gethostname()   # name
 
@@ -71,15 +65,10 @@ name = socket.gethostname()
 # sensor_id = re.findall(r'[\-]\d{2}',name)
 sensor_id = [int(s) for s in name.split('-') if s.isdigit()][0]
 print("sensor_id is: ", sensor_id)
-# #sys.stdout.flush()()
+sys.stdout.flush()
 
 url_turn_on = urls_turn_on[sensor_id-3]     # -3 as senors start cycle2-03
 url_turn_off = urls_turn_off[sensor_id-3] 
-
-print("url_turn_on", url_turn_on)
-print("url_turn_off", url_turn_off)
-
-
 sensor_data = processor.SensorData()
 iter = 0
 
@@ -90,24 +79,26 @@ while (True):
 
         if sensor_data.charge_status != 'PRESENT':
             print(f"the current LOW LOW battery level is {sensor_data.sensor_data['bl']}")
-            #sys.stdout.flush()()
+            sys.stdout.flush()
             r = requests.post(url_turn_on, data=pload)
             print(r.text)
+            sys.stdout.flush()
             sleep(10)
-            #sys.stdout.flush()()
-        
+            
+
     elif sensor_data.sensor_data['bl'] > upper_threshold:
 
         if sensor_data.charge_status == 'PRESENT':
             print(f"the current HIGH HIGH battery level is {sensor_data.sensor_data['bl']}")
-            #sys.stdout.flush()()
+            sys.stdout.flush()
             r = requests.post(url_turn_off, data=pload)
             print(r.text)
+            sys.stdout.flush()
             sleep(10)
-            #sys.stdout.flush()()
+            
 
     print(f"Battery level now is {sensor_data.sensor_data['bl']} and charging status is {sensor_data.charge_status}")
-    #sys.stdout.flush()()
+    #sys.stdout.flush()
     
     sleep(10)
 
