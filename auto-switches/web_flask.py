@@ -1,6 +1,6 @@
 
 
-#!/usr/bin/env python3
+#!/usr/bin/python
 
 
 # https://help.ifttt.com/hc/en-us/articles/115010230347-Webhooks-service-FAQ
