@@ -5,7 +5,7 @@
 import sys
 from subprocess import call
 call(["Welcome to the world of Robots"], shell=True)
-sys.exit
+sys.exit()
 
 
 # https://help.ifttt.com/hc/en-us/articles/115010230347-Webhooks-service-FAQ
