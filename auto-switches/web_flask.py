@@ -69,6 +69,10 @@ print("sensor_id is: ", sensor_id)
 url_turn_on = urls_turn_on[sensor_id-3]     # -3 as senors start cycle2-03
 url_turn_off = urls_turn_off[sensor_id-3] 
 
+print("url_turn_on", url_turn_on)
+print("url_turn_off", url_turn_off)
+
+
 sensor_data = processor.SensorData()
 iter = 0
 
@@ -76,6 +80,7 @@ while (True):
     sensor_data.battery_update_values()
 
     if sensor_data.sensor_data['bl'] <= lower_threshold:
+        print("sensor_data.charge_status", sensor_data.charge_status)
         if sensor_data.charge_status != 'PRESENT':
             print(f"the current LOW LOW battery level is {sensor_data.sensor_data['bl']}")
             #sys.stdout.flush()()
@@ -84,6 +89,7 @@ while (True):
             #sys.stdout.flush()()
         
     elif sensor_data.sensor_data['bl'] > upper_threshold:
+        print("sensor_data.charge_status", sensor_data.charge_status)
         if sensor_data.charge_status == 'PRESENT':
             print(f"the current HIGH HIGH battery level is {sensor_data.sensor_data['bl']}")
             #sys.stdout.flush()()
