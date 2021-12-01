@@ -279,6 +279,7 @@ if __name__ == "__main__":
                                     zip(alphabet_string[:len(sensor_data.sensor_data)],
                                     sensor_data.sensor_data.values())}
                 print(data_frame_json)
+                data_frame_json = json.dumps(data_frame_json, indent=4)
                 # data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
                 
                 client.publish(client.topic, data_frame_json)
