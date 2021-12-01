@@ -302,6 +302,7 @@ if __name__ == "__main__":
                     iter -= 1    
                     print(f"Message is being sent; length of the truncated message is {len(data_frame_json)}")
                     all_keys_sent.append(new_sensor_data.keys())
+                    print("all_keys_sent", all_keys_sent)
 
                 print("The while loop is just exited!!!!!!")
                 sys.exit()
