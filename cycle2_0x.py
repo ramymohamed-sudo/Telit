@@ -199,11 +199,11 @@ def main():
 
 
 iot_is_used = False
-sensor_data = dict()
 node = IoTMqtt()
 node.setupGPIO()
 no_of_iter = 3
 i = 1
+alphabet_string = string.ascii_lowercase
 
 """ Telit is enabled by default (double check "ls /dev")- maybe assert """
 if iot_is_used:
@@ -241,12 +241,13 @@ if __name__ == "__main__":
             while i <= no_of_iter:
                 print(f"iteration number {i}")
                 main()
-                data_frame_json = sensor_data.sensor_data   # json.dumps(sensor_data.sensor_data, indent=4)
-                
+
+                # data_frame_json = sensor_data.sensor_data   # json.dumps(sensor_data.sensor_data, indent=4) 
                 # reduced key size for Telit
-                alphabet_string = string.ascii_lowercase
-                for new_key, key in zip(alphabet_string[:len(data_frame_json)], data_frame_json.keys()):
-                    data_frame_json[new_key] = data_frame_json.pop(key)
+                data_frame_json = {new_key: val for (new_key, val) in 
+                                    zip(alphabet_string[:len(sensor_data.sensor_data)],
+                                    sensor_data.sensor_data.values())}
+                print(data_frame_json)
 
                 print(f"sensor_data is:\n {data_frame_json}")
                 print("before node.mqtt_publish()")
@@ -274,13 +275,11 @@ if __name__ == "__main__":
                 print(f"iteration number {i}")
                 main()
 
-                data_frame_json = sensor_data.sensor_data
                 # reduced key size for Telit
-                alphabet_string = string.ascii_lowercase
-                for new_key, key in zip(alphabet_string[:len(data_frame_json)], data_frame_json.keys()):
-                    print(new_key)
-                    data_frame_json[new_key] = data_frame_json.pop(key)
-                print("data_frame_json", data_frame_json)
+                data_frame_json = {new_key: val for (new_key, val) in 
+                                    zip(alphabet_string[:len(sensor_data.sensor_data)],
+                                    sensor_data.sensor_data.values())}
+                print(data_frame_json)
                 
                 sys.exit()
                 data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
