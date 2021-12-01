@@ -278,6 +278,7 @@ if __name__ == "__main__":
                 # reduced key size for Telit
                 alphabet_string = string.ascii_lowercase
                 for new_key, key in zip(alphabet_string[:len(data_frame_json)], data_frame_json.keys()):
+                    print(new_key)
                     data_frame_json[new_key] = data_frame_json.pop(key)
                 print("data_frame_json", data_frame_json)
                 
