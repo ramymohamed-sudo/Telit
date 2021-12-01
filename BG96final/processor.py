@@ -22,7 +22,7 @@ class SensorData():
     def timestamp(self):
         millis = int(round(time.time() * 1000))
         if self.model == 'Telit':
-            self.sensor_data['timestamp'] = 0  # timestamp
+            self.sensor_data['timestamp'] = millis  # timestamp
         else:
             self.sensor_data['timestamp'] = millis     # timestamp
 
