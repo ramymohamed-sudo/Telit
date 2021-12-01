@@ -15,7 +15,7 @@ from re import search
 class SensorData():
     def __init__(self, model='Telit') -> None:
         self.sensor_data = dict()
-        self.sensor_data['na'] = socket.gethostname()   # name
+        self.sensor_data['name'] = socket.gethostname()   # name
         self.pijuice = PiJuice(1, 0x14)
         self.model= model
     
@@ -34,9 +34,9 @@ class SensorData():
         self.sensor_data['disk_perc'] = float(self.getDiskSpace()[3].replace("%", ""))     # disk_percnt    # getDiskSpace()[3]
         WiFi_ssd = str(subprocess.check_output('iwgetid', shell=True))
         if search(r'(HUAWEI|IBM)', WiFi_ssd):
-            self.sensor_data['wifi'] = 1  # wifi
+            self.sensor_data['wifi'] = True  # wifi
         else:
-            self.sensor_data['wifi'] = 0  # wifi
+            self.sensor_data['wifi'] = True  # wifi
 
     # """ BG96 parameters reading"""
     def update_BG_values(self):
