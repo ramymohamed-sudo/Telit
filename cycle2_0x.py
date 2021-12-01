@@ -23,6 +23,7 @@ import socket
 from re import search
 import itertools
 import string
+from collections import defaultdict
 
 
 connected = False
@@ -278,12 +279,12 @@ if __name__ == "__main__":
 
 
                 # send multiple dictionaries        sensor_data.sensor_data
-                all_keys_sent = []
+                all_keys_sent = defaultdict(list)
                 message = True
                 iter = 4
                 while iter > 1:
                     sensor_data_truncated = {key:val for (key, val) in sensor_data.sensor_data.items()
-                                             if key not in all_keys_sent}
+                                             if key not in all_keys_sent.keys()}
                     
                     print("sensor_data_truncated.keys()", sensor_data_truncated.keys())
                     if len(sensor_data_truncated) == 0:
@@ -301,7 +302,9 @@ if __name__ == "__main__":
                         
                     iter -= 1    
                     print(f"Message is being sent; length of the truncated message is {len(data_frame_json)}")
-                    all_keys_sent.append(new_sensor_data.keys())
+                    
+                    for key in new_sensor_data.keys():
+                        all_keys_sent[key].append(None)
                     print("all_keys_sent", all_keys_sent)
 
                 print("The while loop is just exited!!!!!!")
