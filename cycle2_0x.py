@@ -22,6 +22,7 @@ import flask
 import socket
 from re import search
 import itertools
+import string
 
 
 connected = False
@@ -175,26 +176,9 @@ class IoTMqtt(IoTSixfabTelit.IoT):
     def mqtt_publish(self, data=None):
         print(f"Waiting {self.secs_befr_send} seconds before sending sensor data....")
         sleep(self.secs_befr_send)
-        # self.myMessage = "Hello 2025"
-        # self.sendATComm("AT#MQPUBS=1,\"5G-Solutions\",0,0,"+self.myMessage+self.CTRL_Z,"OK")
-        new_sensor_data = dict(itertools.islice(data.items(), 10))
-        print("new_sensor_data........\n", new_sensor_data)
 
-        # sensor_data = dict()
-        # sensor_data['ID'] = 12
-        # sensor_data['Battery'] = 90.0
-        
-        # sensor_data = {"ID": 12, "Battery": 90}
-        # sensor_data = {'tim': 1637243564699,
-        #                'nm': 'cycle2-07',
-        #                'tx_pwr': 1.1,
-        #                'mode': 'mode',
-        #                'cpu_tmp': 65.7,
-        #                'btr_lvl': 97,
-        #                'btr_vol': 4148,
-        #                'btr_tmp': 40,
-        #                'hrs_sinc_chrg': 2,
-        #                'chrg_cycl': '2'}
+        new_sensor_data = dict(itertools.islice(data.items(), len(data)))
+        print("new_sensor_data........\n", new_sensor_data)
 
         self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{new_sensor_data}\""+self.CTRL_Z,"OK") # this also works well 
         # self.sendATComm(self.data_frame_json+self.CTRL_Z,"+QMTPUB: 0,0,0")
@@ -258,6 +242,12 @@ if __name__ == "__main__":
                 print(f"iteration number {i}")
                 main()
                 data_frame_json = sensor_data.sensor_data   # json.dumps(sensor_data.sensor_data, indent=4)
+                
+                # reduced key size for Telit
+                alphabet_string = string.ascii_lowercase
+                for new_key, key in zip(alphabet_string[:len(data_frame_json)], data_frame_json.keys()):
+                    data_frame_json[new_key] = data_frame_json.pop(key)
+
                 print(f"sensor_data is:\n {data_frame_json}")
                 print("before node.mqtt_publish()")
                 node.mqtt_publish(data=data_frame_json)
@@ -283,6 +273,14 @@ if __name__ == "__main__":
             while i <= no_of_iter:
                 print(f"iteration number {i}")
                 main()
+
+                data_frame_json = sensor_data.sensor_data
+                # reduced key size for Telit
+                alphabet_string = string.ascii_lowercase
+                for new_key, key in zip(alphabet_string[:len(data_frame_json)], data_frame_json.keys()):
+                    data_frame_json[new_key] = data_frame_json.pop(key)
+                print("data_frame_json", data_frame_json)
+                
                 data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
                 client.publish(client.topic, data_frame_json)
                 # client.publish(topic,json.loads(str(row)))
