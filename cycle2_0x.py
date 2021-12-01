@@ -276,11 +276,13 @@ if __name__ == "__main__":
                 main()
                 # data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
 
+                new_sensor_data = {}
                 for k in range (len(sensor_data.sensor_data)):
-                    new_sensor_data = dict(itertools.islice(sensor_data.sensor_data.items(), k))
                     data_frame_json = json.dumps(new_sensor_data, indent=4)
                     if len(data_frame_json) >= 140:
                         break
+                    new_sensor_data = dict(itertools.islice(sensor_data.sensor_data.items(), k))
+                    
                 print(f"Message is being sent; length of the truncated message is {len(data_frame_json)}")
 
                 sys.exit()
