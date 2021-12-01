@@ -35,9 +35,9 @@ sys.stdout.flush()
 
 
 pload = {"value1": "", "value2": "", "value3": ""}
-lower_threshold = 60.0
-upper_threshold = 70.0
-# name = sensor_data.sensor_data['na'] = socket.gethostname()   # name
+lower_threshold = 20.0
+upper_threshold = 90.0
+# name = sensor_data.sensor_data['name'] = socket.gethostname()   # name
 
 url3_turn_on = 'https://maker.ifttt.com/trigger/cycle2-03-battery-low/with/key/7exmlYuXrRDcUqCFU5eap'
 url4_turn_on = 'https://maker.ifttt.com/trigger/cycle2-04-battery-low/with/key/7exmlYuXrRDcUqCFU5eap'
@@ -75,10 +75,10 @@ iter = 0
 while (True):
     sensor_data.battery_update_values()
 
-    if sensor_data.sensor_data['bl'] <= lower_threshold:
+    if sensor_data.sensor_data['batt_lvl'] <= lower_threshold:
 
         if sensor_data.charge_status != 'PRESENT':
-            print(f"the current LOW LOW battery level is {sensor_data.sensor_data['bl']}")
+            print(f"the current LOW LOW battery level is {sensor_data.sensor_data['batt_lvl']}")
             sys.stdout.flush()
             r = requests.post(url_turn_on, data=pload)
             print(r.text)
@@ -86,10 +86,10 @@ while (True):
             sleep(10)
             
 
-    elif sensor_data.sensor_data['bl'] > upper_threshold:
+    elif sensor_data.sensor_data['batt_lvl'] > upper_threshold:
 
         if sensor_data.charge_status == 'PRESENT':
-            print(f"the current HIGH HIGH battery level is {sensor_data.sensor_data['bl']}")
+            print(f"the current HIGH HIGH battery level is {sensor_data.sensor_data['batt_lvl']}")
             sys.stdout.flush()
             r = requests.post(url_turn_off, data=pload)
             print(r.text)
@@ -97,7 +97,7 @@ while (True):
             sleep(10)
             
 
-    print(f"Battery level now is {sensor_data.sensor_data['bl']} and charging status is {sensor_data.charge_status}")
+    print(f"Battery level now is {sensor_data.sensor_data['batt_lvl']} and charging status is {sensor_data.charge_status}")
     #sys.stdout.flush()
     
     sleep(10)
