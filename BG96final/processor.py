@@ -61,11 +61,15 @@ class SensorData():
 
             """ Battery methods to enable/disable charging """
             # self.pijuice.status.GetStatus()
-            self.charge_status = self.pijuice.status.GetStatus()['data']['powerInput']
-            if self.charge_status == 'PRESENT':
-                self.sensor_data['chrg_st'] = True
-            else:
-                self.sensor_data['chrg_st'] = False
+            self.charge_status_ = self.pijuice.status.GetStatus()['data']['powerInput']
+            self.charge_status_5VIO = self.pijuice.status.GetStatus()['data']['powerInput5vIo']
+
+            if (self.charge_status_ != 'PRESENT') and (self.charge_status_5VIO != 'PRESENT'):
+                self.charge_status = 'NOT_PRESENT'
+            
+            elif (self.charge_status_ == 'PRESENT') or (self.charge_status_5VIO == 'PRESENT'):
+                self.charge_status = 'PRESENT'
+            
             # {'data': {'isFault': True, 'isButton': False, 'battery': 'NORMAL', 
             # 'powerInput': 'NOT_PRESENT', 'powerInput5vIo': 'NOT_PRESENT'}, 'error': 'NO_ERROR'}
 

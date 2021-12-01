@@ -105,3 +105,10 @@ In the python script for each sensor:
 3- make use of these names (envirnoment variables when send data via the publisher code)
 4- Once this is completed for one sensor - put everything on github and just use git clone
 
+
+<br />
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+<br />
+nohup python web_flask.py > switch.log &
+
+

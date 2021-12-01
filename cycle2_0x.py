@@ -5,8 +5,8 @@ No built-in sensors witht the Sixfab HAT -
 Remember for Pijuice HAT, there was a function to stop the battery from being charged (if needed)
 """
 
-import BG96final.processor as processor
-
+# import BG96final.processor as processor
+import autoswitches.processor as processor
 import IoTSixfabTelit
 from time import sleep
 import subprocess

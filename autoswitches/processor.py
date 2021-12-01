@@ -22,42 +22,42 @@ class SensorData():
     def timestamp(self):
         millis = int(round(time.time() * 1000))
         if self.model == 'Telit':
-            self.sensor_data['ts'] = 0  # timestamp
+            self.sensor_data['timestamp'] = 0  # timestamp
         else:
-            self.sensor_data['ts'] = millis     # timestamp
+            self.sensor_data['timestamp'] = millis     # timestamp
 
     # """ features such as no of running processes/ # Telit or BG96 """
     def cpu_temp_process_ram_utilization(self):
-        self.sensor_data['cpt'] = float(self.getCPUtemperature())   # cpu_temp
-        self.sensor_data['cpu'] = float(self.getCPUuse())   # cpu_utliz
-        self.sensor_data['ru'] = round(int(self.getRAMinfo()[1]) / 1000,1)  # ram_utliz
-        self.sensor_data['dp'] = float(self.getDiskSpace()[3].replace("%", ""))     # disk_percnt    # getDiskSpace()[3]
+        self.sensor_data['cpu_temp'] = float(self.getCPUtemperature())   # cpu_temp
+        self.sensor_data['cpu_util'] = float(self.getCPUuse())   # cpu_utliz
+        self.sensor_data['ram_util'] = round(int(self.getRAMinfo()[1]) / 1000,1)  # ram_utliz
+        self.sensor_data['disk_perc'] = float(self.getDiskSpace()[3].replace("%", ""))     # disk_percnt    # getDiskSpace()[3]
         WiFi_ssd = str(subprocess.check_output('iwgetid', shell=True))
         if search(r'(HUAWEI|IBM)', WiFi_ssd):
-            self.sensor_data['wf'] = 1  # wifi
+            self.sensor_data['wifi'] = 1  # wifi
         else:
-            self.sensor_data['wf'] = 0  # wifi
+            self.sensor_data['wifi'] = 0  # wifi
 
     # """ BG96 parameters reading"""
     def update_BG_values(self):
-        self.sensor_data['txp'] = 1.0       # tx_pwr
-        self.sensor_data['O'] = 'm'    # iot_mode
+        self.sensor_data['tx_pwr'] = 1.0       # tx_pwr
+        self.sensor_data['iot_mode'] = 'm'    # iot_mode
     
     # """ BG96 parameters reading"""
     def update_Telit_values(self):
-        self.sensor_data['txp'] = 1.0       # ??
-        self.sensor_data['O'] = 'm'    # ??
+        self.sensor_data['tx_pwr'] = 1.0       # ??
+        self.sensor_data['iot_mode'] = 'm'    # ??
 
     # """ Battery parameters reading"""
     def battery_update_values(self):
         status = self.pijuice.status.GetStatus()
         key, value = next(iter(status.items()))
         try:
-            self.sensor_data['bl'] = self.pijuice.status.GetChargeLevel()['data']
-            self.sensor_data['bmv'] = self.pijuice.status.GetBatteryVoltage()['data']
-            self.sensor_data['bt'] = self.pijuice.status.GetBatteryTemperature()['data']
-            self.sensor_data['hsc'] = 2    # env.variables from IFTT script
-            self.sensor_data['cc'] = '1'
+            self.sensor_data['batt_lvl'] = self.pijuice.status.GetChargeLevel()['data']
+            self.sensor_data['batt_mv'] = self.pijuice.status.GetBatteryVoltage()['data']
+            self.sensor_data['batt_tmp'] = self.pijuice.status.GetBatteryTemperature()['data']
+            self.sensor_data['hrs_since_ful_chrg'] = 2    # env.variables from IFTT script
+            self.sensor_data['chrg_cycls'] = '1'
 
             """ Battery methods to enable/disable charging """
             # self.pijuice.status.GetStatus()
