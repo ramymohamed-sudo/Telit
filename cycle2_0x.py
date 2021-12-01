@@ -274,13 +274,16 @@ if __name__ == "__main__":
             while i <= no_of_iter:
                 print(f"iteration number {i}")
                 main()
-                # reduced key size for Telit
-                data_frame_json = {new_key: val for (new_key, val) in 
-                                    zip(alphabet_string[:len(sensor_data.sensor_data)],
-                                    sensor_data.sensor_data.values())}
-                print(data_frame_json)
-                data_frame_json = json.dumps(data_frame_json, indent=4)
                 # data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
+
+                for k in range (len(sensor_data.sensor_data)):
+                    new_sensor_data = dict(itertools.islice(sensor_data.sensor_data.items(), k))
+                    data_frame_json = json.dumps(new_sensor_data, indent=4)
+                    if len(data_frame_json) >= 140:
+                        break
+                print(f"Message is being sent; length of the truncated message is {len(data_frame_json)}")
+
+                sys.exit()
                 
                 client.publish(client.topic, data_frame_json)
                 # client.publish(topic,json.loads(str(row)))
