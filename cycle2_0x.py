@@ -281,6 +281,7 @@ if __name__ == "__main__":
                     data_frame_json[new_key] = data_frame_json.pop(key)
                 print("data_frame_json", data_frame_json)
                 
+                sys.exit()
                 data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
                 client.publish(client.topic, data_frame_json)
                 # client.publish(topic,json.loads(str(row)))
