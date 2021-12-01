@@ -274,17 +274,13 @@ if __name__ == "__main__":
             while i <= no_of_iter:
                 print(f"iteration number {i}")
                 main()
-
-                
-
                 # reduced key size for Telit
                 data_frame_json = {new_key: val for (new_key, val) in 
                                     zip(alphabet_string[:len(sensor_data.sensor_data)],
                                     sensor_data.sensor_data.values())}
                 print(data_frame_json)
+                # data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
                 
-                sys.exit()
-                data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
                 client.publish(client.topic, data_frame_json)
                 # client.publish(topic,json.loads(str(row)))
                 client.on_publish_message(data_frame_json)
