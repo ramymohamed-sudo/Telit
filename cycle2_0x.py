@@ -275,6 +275,8 @@ if __name__ == "__main__":
                 print(f"iteration number {i}")
                 main()
 
+                
+
                 # reduced key size for Telit
                 data_frame_json = {new_key: val for (new_key, val) in 
                                     zip(alphabet_string[:len(sensor_data.sensor_data)],
