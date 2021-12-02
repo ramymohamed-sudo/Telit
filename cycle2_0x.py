@@ -195,13 +195,9 @@ class IoTMqtt(IoTSixfabTelit.IoT):
                 print(f"Message is being sent; length of the truncated message is {len(data_frame_json)}")     # noqa
                 self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{new_sensor_data}\""+self.CTRL_Z,"OK") # this also works well 
                 # self.sendATComm(self.data_frame_json+self.CTRL_Z,"+QMTPUB: 0,0,0")
-                sleep(2)
+                sleep(0.5)
             all_keys_sent.update(new_sensor_data)
         print("The while loop is just exited!!!!!!")
-
-
-        new_sensor_data = dict(itertools.islice(data.items(), len(data)))
-        print("new_sensor_data........\n", new_sensor_data)
 
         
 
