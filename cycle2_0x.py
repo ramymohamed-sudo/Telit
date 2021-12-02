@@ -221,7 +221,7 @@ def main():
     sensor_data.battery_update_values()
 
 
-iot_is_used = False
+iot_is_used = True
 node = IoTMqtt()
 node.setupGPIO()
 no_of_iter = 3
