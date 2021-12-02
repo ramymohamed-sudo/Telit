@@ -178,11 +178,33 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         print(f"Waiting {self.secs_befr_send} seconds before sending sensor data....")
         sleep(self.secs_befr_send)
 
+
+        message = True
+        while message:
+            sensor_data_truncated = {key: val for (key, val) in data.items()
+                                    if key not in all_keys_sent.keys()}
+            if len(sensor_data_truncated) == 0:
+                message = False
+                print(f"message is {message}")
+            else:
+                for k in range(len(sensor_data_truncated) + 1):
+                    new_sensor_data = dict(itertools.islice(sensor_data_truncated.items(), k))  # noqa
+                    data_frame_json = json.dumps(new_sensor_data, indent=4)
+                    if len(data_frame_json) > 120:
+                        break
+                print(f"Message is being sent; length of the truncated message is {len(data_frame_json)}")     # noqa
+                self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{new_sensor_data}\""+self.CTRL_Z,"OK") # this also works well 
+                # self.sendATComm(self.data_frame_json+self.CTRL_Z,"+QMTPUB: 0,0,0")
+                sleep(2)
+            all_keys_sent.update(new_sensor_data)
+        print("The while loop is just exited!!!!!!")
+
+
         new_sensor_data = dict(itertools.islice(data.items(), len(data)))
         print("new_sensor_data........\n", new_sensor_data)
 
-        self.sendATComm(f"AT#MQPUBS=1,\"5G-Solutions\",0,0,\"{new_sensor_data}\""+self.CTRL_Z,"OK") # this also works well 
-        # self.sendATComm(self.data_frame_json+self.CTRL_Z,"+QMTPUB: 0,0,0")
+        
+
         
     def mqtt_close(self):
         self.sendATComm("AT#MQDISC=1","OK")
@@ -242,16 +264,8 @@ if __name__ == "__main__":
             while i <= no_of_iter:
                 print(f"iteration number {i}")
                 main()
-
-                # data_frame_json = sensor_data.sensor_data   # json.dumps(sensor_data.sensor_data, indent=4) 
-                # reduced key size for Telit
-                data_frame_json = {new_key: val for (new_key, val) in 
-                                    zip(alphabet_string[:len(sensor_data.sensor_data)],
-                                    sensor_data.sensor_data.values())}
-                print(data_frame_json)
-
+                data_frame_json = sensor_data.sensor_data   # json.dumps(sensor_data.sensor_data, indent=4) 
                 print(f"sensor_data is:\n {data_frame_json}")
-                print("before node.mqtt_publish()")
                 node.mqtt_publish(data=data_frame_json)
                 print("after node.mqtt_publish()")
                 # node.mqtt_close()
