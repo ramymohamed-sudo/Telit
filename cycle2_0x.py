@@ -178,7 +178,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         print(f"Waiting {self.secs_befr_send} seconds before sending sensor data....")
         sleep(self.secs_befr_send)
 
-
+        all_keys_sent = {}
         message = True
         while message:
             sensor_data_truncated = {key: val for (key, val) in data.items()
@@ -289,41 +289,7 @@ if __name__ == "__main__":
             while i <= no_of_iter:
                 print(f"iteration number {i}")
                 main()
-                # data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
-
-
-                # send multiple dictionaries        sensor_data.sensor_data
-                all_keys_sent = defaultdict(list)
-                message = True
-                iter = 4
-                while iter > 1:
-                    sensor_data_truncated = {key:val for (key, val) in sensor_data.sensor_data.items()
-                                             if key not in all_keys_sent.keys()}
-                    
-                    print("sensor_data_truncated.keys()", sensor_data_truncated.keys())
-                    if len(sensor_data_truncated) == 0:
-                        # message = False
-                        print(" message = False")
-                        
-                    else:
-                        for k in range (len(sensor_data_truncated)):
-                            new_sensor_data = dict(itertools.islice(sensor_data_truncated.items(), k))
-                            data_frame_json = json.dumps(new_sensor_data, indent=4)
-                            print(f"when k={k}, the length={len(data_frame_json)}")
-
-                            if len(data_frame_json) > 130:
-                                break
-                        
-                    iter -= 1    
-                    print(f"Message is being sent; length of the truncated message is {len(data_frame_json)}")
-                    
-                    for key in new_sensor_data.keys():
-                        all_keys_sent[key].append(None)
-                    print("all_keys_sent", all_keys_sent)
-
-                print("The while loop is just exited!!!!!!")
-                sys.exit()
-                
+                data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
                 client.publish(client.topic, data_frame_json)
                 # client.publish(topic,json.loads(str(row)))
                 client.on_publish_message(data_frame_json)
