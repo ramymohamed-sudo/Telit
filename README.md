@@ -112,3 +112,13 @@ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 nohup python web_flask.py > switch.log &
 
 
+
+
+https://sixfab.com/updated-tutorial-2-make-a-ppp-internet-connection-with-sixfab-gprs-shield-on-raspberry-pi/
+
+sudo systemd-escape stop serial­-getty@ttyS0.service
+sudo systemd-escape start serial­-getty@ttyS0.service
+
+sudo systemd-escape stop serial­-getty@ttyUSB0.service
+sudo systemd-escape stop serial­-getty@ttyUSB1.service
+sudo systemd-escape stop serial­-getty@ttyUSB2.service

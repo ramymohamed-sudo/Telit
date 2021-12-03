@@ -137,7 +137,7 @@ def main():
 
     
 
-iot_is_used = False     # True
+iot_is_used = True     # True
 node = IoTMqtt()
 node.setupGPIO()
 no_of_iter = 4
