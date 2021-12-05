@@ -32,7 +32,8 @@ class SensorData():
         self.sensor_data['cpu_util'] = float(self.getCPUuse())   # cpu_utliz
         self.sensor_data['ram_util'] = round(int(self.getRAMinfo()[1]) / 1000,1)  # ram_utliz
         self.sensor_data['disk_perc'] = float(self.getDiskSpace()[3].replace("%", ""))     # disk_percnt    # getDiskSpace()[3]
-        WiFi_ssd = str(subprocess.check_output('iwgetid', shell=True))
+        # WiFi_ssd = str(subprocess.check_output('iwgetid', shell=True))
+        WiFi_ssd = str(subprocess.check_output('ip a show wlan0 up', shell=True))
         if search(r'(HUAWEI|IBM)', WiFi_ssd):
             self.sensor_data['wifi'] = True  # wifi
         else:

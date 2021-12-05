@@ -43,8 +43,8 @@ node.sendATComm("AT+CGDCONT?","OK")     # returns 6 rows for context 1 to contex
 node.sendATComm("AT+CGPADDR=1","OK")    # # get CID address    +CGPADDR: 1, "192.168.2.6"
 # AT+CGDCONT=[<cid>[,<PDP_type>[,<APN>[,<PDP_addr>
 # AT+CGDCONT=1,\"IP\",\"default\",\"192.168.2.6\",0,0
-node.sendATComm("AT+CGDCONT=1,\"IP\",\"default\",\"192.168.2.22\",0,0","OK")
-node.sendATComm("AT+CGDCONT?","OK")     # the first row is:1, "IP", "default", "192.168.2.6", 0,0,0,0
+node.sendATComm("AT+CGDCONT=1,\"IP\",\"default\",\"192.168.2.2\",0,0","OK")
+node.sendATComm("AT+CGDCONT?","OK")     # the first row is:1, "IP", "default", "192.168.2.2", 0,0,0,0
 node.sendATComm("AT+CGACT?","OK")   # # Read command returns the current activation state    CGACT:1,1     rest are 0s
 
 # VIP page 338 - recall this is multiple time for context activation
