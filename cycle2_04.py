@@ -270,12 +270,12 @@ def main():
     raspb_pi_update_values()
     battery_update_values()
 
-iot_is_used = True
+iot_is_used = False
 sensor_data = dict()
 node = IoTMqtt()
 node.setupGPIO()
 no_of_iter = 5
-i = 1
+i = 3
 
 """ Telit is enabled by default (double check "ls /dev")- maybe assert """
 # node.disable()
