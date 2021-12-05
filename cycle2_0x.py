@@ -220,7 +220,7 @@ def main():
 iot_is_used = True
 node = IoTMqtt()
 node.setupGPIO()
-no_of_iter = 1
+no_of_iter = 3
 i = 1
 alphabet_string = string.ascii_lowercase
 
