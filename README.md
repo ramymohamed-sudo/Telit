@@ -112,8 +112,8 @@ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 nohup python web_flask.py > switch.log &
 
 
-
-
+https://iotbytes.wordpress.com/usb-analog-modem-with-raspberry-pi/
+https://docs.sixfab.com/page/setting-up-the-ppp-connection-for-sixfab-shield-hat
 https://sixfab.com/updated-tutorial-2-make-a-ppp-internet-connection-with-sixfab-gprs-shield-on-raspberry-pi/
 https://docs.sixfab.com/page/setting-up-the-ppp-connection-for-sixfab-shield-hat
 

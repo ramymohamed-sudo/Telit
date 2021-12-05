@@ -282,12 +282,12 @@ if __name__ == "__main__":
                 time.sleep(0.2)
             client.loop_stop()
         else:
-            while i <= no_of_iter:
+            while True:     # i <= no_of_iter
                 print(f"iteration number {i}")
                 main()
                 data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
                 client.publish(client.topic, data_frame_json)
                 # client.publish(topic,json.loads(str(row)))
                 client.on_publish_message(data_frame_json)
-                time.sleep(5)
+                time.sleep(10)
                 i += 1
