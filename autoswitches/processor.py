@@ -35,9 +35,9 @@ class SensorData():
         # WiFi_ssd = str(subprocess.check_output('iwgetid', shell=True))
         WiFi_ssd = str(subprocess.check_output('ip a show wlan0 up', shell=True))
         if search(r'(HUAWEI|IBM)', WiFi_ssd):
-            self.sensor_data['wifi'] = True  # wifi
+            self.sensor_data['wifi'] = True
         else:
-            self.sensor_data['wifi'] = True  # wifi
+            self.sensor_data['wifi'] = False
 
     # """ BG96 parameters reading"""
     def update_BG_values(self):
