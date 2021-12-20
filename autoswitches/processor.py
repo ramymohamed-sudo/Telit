@@ -18,6 +18,8 @@ class SensorData():
         self.sensor_data['name'] = socket.gethostname()   # name
         self.pijuice = PiJuice(1, 0x14)
         self.model= model
+        self.lower_threshold = 20.0
+        self.upper_threshold = 90.0
     
     def timestamp(self):
         millis = int(round(time.time() * 1000))
@@ -134,6 +136,33 @@ class SensorData():
 
     def to_json(self):
         pass
+
+    def get_on_off_urls(self, sensor_id):
+        url3_turn_on = 'https://maker.ifttt.com/trigger/cycle2-03-battery-low/with/key/7exmlYuXrRDcUqCFU5eap'
+        url4_turn_on = 'https://maker.ifttt.com/trigger/cycle2-04-battery-low/with/key/7exmlYuXrRDcUqCFU5eap'
+        url5_turn_on = 'https://maker.ifttt.com/trigger/cycle2-05-battery-low/with/key/7exmlYuXrRDcUqCFU5eap'
+        url6_turn_on = 'https://maker.ifttt.com/trigger/cycle2-06-battery-low/with/key/7exmlYuXrRDcUqCFU5eap'
+        url7_turn_on = 'https://maker.ifttt.com/trigger/cycle2-07-battery-low/with/key/7exmlYuXrRDcUqCFU5eap'
+        url8_turn_on = 'https://maker.ifttt.com/trigger/cycle2-08-battery-low/with/key/7exmlYuXrRDcUqCFU5eap'
+        url9_turn_on = 'https://maker.ifttt.com/trigger/cycle2-09-battery-low/with/key/7exmlYuXrRDcUqCFU5eap'
+        url10_turn_on = 'https://maker.ifttt.com/trigger/cycle2-10-battery-low/with/key/7exmlYuXrRDcUqCFU5eap'
+
+        url3_turn_off = 'https://maker.ifttt.com/trigger/cycle2-03-battery-high/with/key/7exmlYuXrRDcUqCFU5eap'
+        url4_turn_off = 'https://maker.ifttt.com/trigger/cycle2-04-battery-high/with/key/7exmlYuXrRDcUqCFU5eap'
+        url5_turn_off = 'https://maker.ifttt.com/trigger/cycle2-05-battery-high/with/key/7exmlYuXrRDcUqCFU5eap'
+        url6_turn_off = 'https://maker.ifttt.com/trigger/cycle2-06-battery-high/with/key/7exmlYuXrRDcUqCFU5eap'
+        url7_turn_off = 'https://maker.ifttt.com/trigger/cycle2-07-battery-high/with/key/7exmlYuXrRDcUqCFU5eap'
+        url8_turn_off = 'https://maker.ifttt.com/trigger/cycle2-08-battery-high/with/key/7exmlYuXrRDcUqCFU5eap'
+        url9_turn_off = 'https://maker.ifttt.com/trigger/cycle2-09-battery-high/with/key/7exmlYuXrRDcUqCFU5eap'
+        url10_turn_off = 'https://maker.ifttt.com/trigger/cycle2-10-battery-high/with/key/7exmlYuXrRDcUqCFU5eap'
+
+        self.urls_turn_on = [eval(f"url{i}_turn_on") for i in range(3, 11)]
+        self.urls_turn_off = [eval(f"url{i}_turn_off") for i in range(3, 11)]
+
+        url_turn_on = self.urls_turn_on[sensor_id-3]     # -3 as senors start cycle2-03
+        url_turn_off = self.urls_turn_off[sensor_id-3]
+        return url_turn_on, url_turn_off
+
 
 """json.dumps(sensor_data, indent=4) """ 
 """ some static/class methods please """ 

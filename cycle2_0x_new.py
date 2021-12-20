@@ -222,6 +222,7 @@ node = IoTMqtt()
 node.setupGPIO()
 no_of_iter = 3
 i = 1
+chrg_cycle = 1
 alphabet_string = string.ascii_lowercase
 
 """ Telit is enabled by default (double check "ls /dev")- maybe assert """
@@ -282,6 +283,20 @@ if __name__ == "__main__":
                 time.sleep(0.2)
             client.loop_stop()
         else:
+            while True:
+                sensor_data.battery_update_values()
+                if (sensor_data.sensor_data['batt_lvl'] > sensor_data.upper_threshold) and (sensor_data.charge_status == 'PRESENT'):
+                    r = requests.post(url_turn_off, data=pload)
+                    print(f"A new charging cycle is just started: {chrg_cycle}")
+
+
+
+            # the cycle starts when battery level > 90%, charger present 
+            # if the above is true, execute web_flask.py and 
+            # # add new column for the cycle
+            # then reset the cycle
+
+
             while True:     # i <= no_of_iter
                 print(f"iteration number {i}")
                 main()
@@ -291,6 +306,8 @@ if __name__ == "__main__":
                 client.on_publish_message(data_frame_json)
                 time.sleep(10)
                 i += 1
+
+                
 
 
 

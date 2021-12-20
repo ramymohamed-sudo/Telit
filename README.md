@@ -110,6 +110,8 @@ In the python script for each sensor:
 sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 <br />
 nohup python web_flask.py > switch.log &
+<br />
+nohup python cycle2_0x.py > sensor.log &
 
 
 https://iotbytes.wordpress.com/usb-analog-modem-with-raspberry-pi/
