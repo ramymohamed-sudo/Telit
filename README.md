@@ -212,3 +212,9 @@ sudo ifconfig wlan0 down
 <br />
 ip a show wlan0 up
 <br />
+
+python
+import autoswitches.processor as processor
+sensor_data = processor.SensorData()
+sensor_data.battery_update_values()
+print(sensor_data.sensor_data['batt_lvl'])

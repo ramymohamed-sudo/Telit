@@ -32,7 +32,7 @@ MessageReceived = False
 
 class WifiMqtt(mqtt.Client):
     def __init__(self,
-                 broker_address='9.162.161.103',
+                 broker_address='9.162.161.90',
                  keepAlive=60,
                  port=1883,
                  topic="5G-Solutions",
@@ -72,7 +72,7 @@ class WifiMqtt(mqtt.Client):
 
 class IoTMqtt(IoTSixfabTelit.IoT):
     def __init__(self,
-                broker_address= '9.162.161.103',
+                broker_address= '9.162.161.90',
                 port=1883,
                 topic="5G-Solutions",
                 clientID="sixfab",
@@ -138,7 +138,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         self.sendATComm("AT#MQCFG?","OK")
 
     def mqtt_open(self):    
-        self.sendATComm("AT#MQCFG=1,\"9.162.161.103\",1883,1","OK") 
+        self.sendATComm("AT#MQCFG=1,\"9.162.161.90\",1883,1","OK") 
         
     def mqtt_connect(self): 
         # self.sendATComm("AT#MQCONN=1,\"1\",\"userName\",\"passWord\"","OK")
