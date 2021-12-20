@@ -139,6 +139,7 @@ class SensorData():
 
     def get_on_off_urls(self, sensor_id):
         url3_turn_on = 'https://maker.ifttt.com/trigger/cycle2-03-battery-low/with/key/7exmlYuXrRDcUqCFU5eap'
+        print(url3_turn_on)
         url4_turn_on = 'https://maker.ifttt.com/trigger/cycle2-04-battery-low/with/key/7exmlYuXrRDcUqCFU5eap'
         url5_turn_on = 'https://maker.ifttt.com/trigger/cycle2-05-battery-low/with/key/7exmlYuXrRDcUqCFU5eap'
         url6_turn_on = 'https://maker.ifttt.com/trigger/cycle2-06-battery-low/with/key/7exmlYuXrRDcUqCFU5eap'
