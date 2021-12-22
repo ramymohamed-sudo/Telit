@@ -117,6 +117,7 @@ class SensorData():
                 self.charge_status = 'PRESENT'
             
             self.sensor_data['chrg_status'] = self.charge_status
+            print(self.charge_status)
             
             # {'data': {'isFault': True, 'isButton': False, 'battery': 'NORMAL', 
             # 'powerInput': 'NOT_PRESENT', 'powerInput5vIo': 'NOT_PRESENT'}, 'error': 'NO_ERROR'}
