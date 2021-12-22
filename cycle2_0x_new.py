@@ -284,8 +284,8 @@ if __name__ == "__main__":
                     sensor_data.battery_update_values()
                     print("waiting for the charger to be disconnected")
 
-
                 print(f"A new charging cycle is just started: {chrg_cycls+1}")
+                sensor_data.start_cycle_timestamp()
                 # then reset the cycle
 
                 while (sensor_data.sensor_data['batt_lvl'] > sensor_data.lower_threshold) and (sensor_data.charge_status == 'NOT_PRESENT'):     # i <= no_of_iter

@@ -38,7 +38,7 @@ class SensorData():
         self.sensor_data['name'] = name
         self.pijuice = PiJuice(1, 0x14)
         self.model= model
-        self.lower_threshold = 10.0
+        self.lower_threshold = 74.0
         self.upper_threshold = 77.0
 
         self.sensor_id = [int(s) for s in name.split('-') if s.isdigit()][0]
@@ -60,11 +60,20 @@ class SensorData():
             self.sensor_data['timestamp'] = millis  # timestamp
         else:
             self.sensor_data['timestamp'] = millis     # timestamp
+    
+    def start_cycle_timestamp(self):
+        self.start_millis = int(round(time.time() * 1000))
+    
+    def ms_to_minutes_Hrs(self, crt_millis):
+        ms = crt_millis - self.start_millis
+        life_minut = ms/(1000*60)
+        self.life_hrs = life_minut/60
+        return life_minut/60
 
     # """ features such as no of running processes/ # Telit or BG96 """
     def cpu_temp_process_ram_utilization(self):
         self.sensor_data['cpu_temp'] = float(self.getCPUtemperature())   # cpu_temp
-        # self.sensor_data['cpu_util'] = float(self.getCPUuse())   # cpu_utliz
+        self.sensor_data['cpu_util'] = float(self.getCPUuse())   # cpu_utliz
         self.sensor_data['ram_util'] = round(int(self.getRAMinfo()[1]) / 1000,1)  # ram_utliz
         self.sensor_data['disk_perc'] = float(self.getDiskSpace()[3].replace("%", ""))     # disk_percnt    # getDiskSpace()[3]
         # WiFi_ssd = str(subprocess.check_output('iwgetid', shell=True))
@@ -92,7 +101,8 @@ class SensorData():
             self.sensor_data['batt_lvl'] = self.pijuice.status.GetChargeLevel()['data']
             self.sensor_data['batt_mv'] = self.pijuice.status.GetBatteryVoltage()['data']
             self.sensor_data['batt_tmp'] = self.pijuice.status.GetBatteryTemperature()['data']
-            self.sensor_data['hrs_since_ful_chrg'] = 2    # env.variables from IFTT script
+            crt_millis = int(round(time.time() * 1000))
+            self.sensor_data['hrs_since_ful_chrg'] = self.ms_to_minutes_Hrs(crt_millis)
             self.sensor_data['chrg_cycls'] = '1'
 
             """ Battery methods to enable/disable charging """
@@ -128,6 +138,8 @@ class SensorData():
                 # leave the sensor charges till exceeds upper_threshold
         elif self.charge_status == 'NOT_PRESENT':
             self.turn_switch_on()
+        else:
+            print("Wiating for the sensor to be ready ......")
         print(f"Battery level now is {self.sensor_data['batt_lvl']} and charging status is {self.charge_status}")
         # if self.sensor_data['batt_lvl'] > self.lower_threshold:
         # return self.SENSOR_READY
