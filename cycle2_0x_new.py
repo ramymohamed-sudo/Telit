@@ -20,6 +20,7 @@ import os
 import sys
 import flask
 import socket
+import requests
 from re import search
 import itertools
 import string
@@ -224,6 +225,9 @@ no_of_iter = 3
 i = 1
 chrg_cycle = 1
 alphabet_string = string.ascii_lowercase
+name = socket.gethostname()
+sensor_id = [int(s) for s in name.split('-') if s.isdigit()][0]
+pload = {"value1": "", "value2": "", "value3": ""}
 
 """ Telit is enabled by default (double check "ls /dev")- maybe assert """
 if iot_is_used:
@@ -234,6 +238,7 @@ if iot_is_used:
 
 if __name__ == "__main__":
     sensor_data = processor.SensorData()
+    url_turn_on, url_turn_off =  sensor_data.get_on_off_urls(sensor_id)
 
     if iot_is_used:
         registered = False
@@ -261,7 +266,9 @@ if __name__ == "__main__":
             while i <= no_of_iter:
                 print(f"iteration number {i}")
                 main()
-                data_frame_json = sensor_data.sensor_data   # json.dumps(sensor_data.sensor_data, indent=4) 
+                data_frame = sensor_data.sensor_data
+                data_frame['chrg_cycle'] = chrg_cycle
+                data_frame_json = data_frame   # json.dumps(sensor_data.sensor_data, indent=4) 
                 print(f"sensor_data is:\n {data_frame_json}")
                 node.mqtt_publish(data=data_frame_json)
                 print("after node.mqtt_publish()")
@@ -282,30 +289,37 @@ if __name__ == "__main__":
             while not MessageReceived:
                 time.sleep(0.2)
             client.loop_stop()
+
         else:
-            while True:
+
+            for chrg_cycle in range(1):
+        
                 sensor_data.battery_update_values()
                 if (sensor_data.sensor_data['batt_lvl'] > sensor_data.upper_threshold) and (sensor_data.charge_status == 'PRESENT'):
                     r = requests.post(url_turn_off, data=pload)
-                    print(f"A new charging cycle is just started: {chrg_cycle}")
+                    time.sleep(20)
+                    print(f"A new charging cycle is just started: {chrg_cycle+1}")
+                    # # add new column for the cycle - called chrg_cycle - 
+                    # then reset the cycle
 
-
-
-            # the cycle starts when battery level > 90%, charger present 
-            # if the above is true, execute web_flask.py and 
-            # # add new column for the cycle
-            # then reset the cycle
-
-
-            while True:     # i <= no_of_iter
-                print(f"iteration number {i}")
-                main()
-                data_frame_json = json.dumps(sensor_data.sensor_data, indent=4)
-                client.publish(client.topic, data_frame_json)
-                # client.publish(topic,json.loads(str(row)))
-                client.on_publish_message(data_frame_json)
-                time.sleep(10)
-                i += 1
+                    while (sensor_data.sensor_data['batt_lvl'] > sensor_data.lower_threshold) and (sensor_data.charge_status == 'NOT_PRESENT'):     # i <= no_of_iter
+                        print(f"iteration number {i}")
+                        main()
+                        data_frame = sensor_data.sensor_data
+                        data_frame['chrg_cycle'] = chrg_cycle+1
+                        data_frame_json = json.dumps(data_frame, indent=4)
+                        client.publish(client.topic, data_frame_json)
+                        # client.publish(topic,json.loads(str(row)))
+                        client.on_publish_message(data_frame_json)
+                        time.sleep(10)
+                        i += 1
+                    
+                    if (sensor_data.sensor_data['batt_lvl'] < sensor_data.lower_threshold) and (sensor_data.charge_status == 'NOT_PRESENT'):
+                            r = requests.post(url_turn_on, data=pload)
+                            time.sleep(20)
+                            print(f"The charging cycle number {chrg_cycle+1} is just ended")
+                            # break
+                        
 
                 
 

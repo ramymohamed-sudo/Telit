@@ -45,7 +45,6 @@ sys.stdout.flush()
 
 sensor_data = processor.SensorData()
 url_turn_on, url_turn_off =  sensor_data.get_on_off_urls(sensor_id)
-
 iter = 0
 
 while (True):
