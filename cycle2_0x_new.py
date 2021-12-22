@@ -227,6 +227,7 @@ chrg_cycle = 1
 alphabet_string = string.ascii_lowercase
 name = socket.gethostname()
 sensor_id = [int(s) for s in name.split('-') if s.isdigit()][0]
+print("sensor_id", sensor_id)
 pload = {"value1": "", "value2": "", "value3": ""}
 
 """ Telit is enabled by default (double check "ls /dev")- maybe assert """
@@ -297,7 +298,10 @@ if __name__ == "__main__":
                 sensor_data.battery_update_values()
                 if (sensor_data.sensor_data['batt_lvl'] > sensor_data.upper_threshold) and (sensor_data.charge_status == 'PRESENT'):
                     r = requests.post(url_turn_off, data=pload)
-                    time.sleep(20)
+                    while sensor_data.charge_status == 'PRESENT':
+                        time.sleep(5)
+                        print("waiting for the charger to be disconnected")
+                        
                     print(f"A new charging cycle is just started: {chrg_cycle+1}")
                     # # add new column for the cycle - called chrg_cycle - 
                     # then reset the cycle
