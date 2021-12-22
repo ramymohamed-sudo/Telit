@@ -300,8 +300,9 @@ if __name__ == "__main__":
                     r = requests.post(url_turn_off, data=pload)
                     while sensor_data.charge_status == 'PRESENT':
                         time.sleep(5)
+                        sensor_data.battery_update_values()
                         print("waiting for the charger to be disconnected")
-                        
+
                     print(f"A new charging cycle is just started: {chrg_cycle+1}")
                     # # add new column for the cycle - called chrg_cycle - 
                     # then reset the cycle
