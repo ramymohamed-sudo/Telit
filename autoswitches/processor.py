@@ -10,6 +10,7 @@ import time
 import os
 import socket
 from re import search
+import requests
 
 
 url3_turn_on = 'https://maker.ifttt.com/trigger/cycle2-03-battery-low/with/key/7exmlYuXrRDcUqCFU5eap'
@@ -29,15 +30,29 @@ url7_turn_off = 'https://maker.ifttt.com/trigger/cycle2-07-battery-high/with/key
 url8_turn_off = 'https://maker.ifttt.com/trigger/cycle2-08-battery-high/with/key/7exmlYuXrRDcUqCFU5eap'
 url9_turn_off = 'https://maker.ifttt.com/trigger/cycle2-09-battery-high/with/key/7exmlYuXrRDcUqCFU5eap'
 url10_turn_off = 'https://maker.ifttt.com/trigger/cycle2-10-battery-high/with/key/7exmlYuXrRDcUqCFU5eap'
+pload = {"value1": "", "value2": "", "value3": ""}
 
 class SensorData():
-    def __init__(self, model='Telit') -> None:
+    def __init__(self, name, model='Telit') -> None:
         self.sensor_data = dict()
-        self.sensor_data['name'] = socket.gethostname()   # name
+        self.sensor_data['name'] = name
         self.pijuice = PiJuice(1, 0x14)
         self.model= model
-        self.lower_threshold = 20.0
+        self.lower_threshold = 10.0
         self.upper_threshold = 90.0
+
+        self.sensor_id = [int(s) for s in name.split('-') if s.isdigit()][0]
+        self.SENSOR_READY = False
+        self.urls_turn_on = [eval(f"url{i}_turn_on") for i in range(3, 11)]
+        self.urls_turn_off = [eval(f"url{i}_turn_off") for i in range(3, 11)]
+        self.url_turn_on = [eval(f"url{i}_turn_on") for i in range(3, 11)][self.sensor_id-3]
+        self.url_turn_off = [eval(f"url{i}_turn_off") for i in range(3, 11)][self.sensor_id-3]
+    
+    def turn_switch_on(self):
+        r = requests.post(self.url_turn_on, data=pload)
+
+    def turn_switch_off(self):
+        r = requests.post(self.url_turn_off, data=pload)
     
     def timestamp(self):
         millis = int(round(time.time() * 1000))
@@ -102,6 +117,23 @@ class SensorData():
             # self.pijuice.status.GetChargeLevel()
         except:
             print(f"There is error related to battery:\n {key}")
+    
+    def prepare_for_data_collect(self):
+        self.battery_update_values()
+        if self.charge_status == 'PRESENT':
+            if self.sensor_data['batt_lvl'] > self.upper_threshold:
+                self.SENSOR_READY = True
+            else:
+                pass
+                # leave the sensor charges till exceeds upper_threshold
+        elif self.charge_status == 'NOT_PRESENT':
+            self.turn_switch_on()
+        print(f"Battery level now is {self.sensor_data['batt_lvl']} and charging status is {self.charge_status}")
+        # if self.sensor_data['batt_lvl'] > self.lower_threshold:
+        # return self.SENSOR_READY
+        # cases
+        # 
+        # return True when ready
 
     def getCPUtemperature(self):
         res = os.popen('vcgencmd measure_temp').readline()
@@ -154,14 +186,6 @@ class SensorData():
 
     def to_json(self):
         pass
-
-    def get_on_off_urls(self, sensor_id):
-        self.urls_turn_on = [eval(f"url{i}_turn_on") for i in range(3, 11)]
-        self.urls_turn_off = [eval(f"url{i}_turn_off") for i in range(3, 11)]
-
-        url_turn_on = self.urls_turn_on[sensor_id-3]     # -3 as senors start cycle2-03
-        url_turn_off = self.urls_turn_off[sensor_id-3]
-        return url_turn_on, url_turn_off
 
 
 """json.dumps(sensor_data, indent=4) """ 

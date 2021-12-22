@@ -113,6 +113,7 @@ nohup python web_flask.py > switch.log &
 nohup python web_flask_new.py > switch.log &
 <br />
 nohup python cycle2_0x.py > sensor.log &
+nohup python cycle2_0x_new.py > sensor.log &
 
 
 https://iotbytes.wordpress.com/usb-analog-modem-with-raspberry-pi/

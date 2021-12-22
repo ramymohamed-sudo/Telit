@@ -200,15 +200,11 @@ class IoTMqtt(IoTSixfabTelit.IoT):
             all_keys_sent.update(new_sensor_data)
         print("The while loop is just exited!!!!!!")
 
-        
-
-        
     def mqtt_close(self):
         self.sendATComm("AT#MQDISC=1","OK")
     
     def subs_topic(self):
         self.sendATComm("AT#MQSUB=1,\"5G-Solutions\"","OK")
-
 
 def main():
     # initialize_sensor_data()
@@ -223,23 +219,20 @@ node = IoTMqtt()
 node.setupGPIO()
 no_of_iter = 3
 i = 1
-chrg_cycle = 1
-alphabet_string = string.ascii_lowercase
 name = socket.gethostname()
-sensor_id = [int(s) for s in name.split('-') if s.isdigit()][0]
-print("sensor_id", sensor_id)
-pload = {"value1": "", "value2": "", "value3": ""}
-
 """ Telit is enabled by default (double check "ls /dev")- maybe assert """
 if iot_is_used:
     # node.disable()
-    time.sleep(1)
+    sleep(1)
     # node.enable()
-    time.sleep(1)
+    sleep(1)
 
 if __name__ == "__main__":
-    sensor_data = processor.SensorData()
-    url_turn_on, url_turn_off =  sensor_data.get_on_off_urls(sensor_id)
+    sensor_data = processor.SensorData(name)
+
+    while sensor_data.SENSOR_READY == False:
+        sensor_data.prepare_for_data_collect()
+        sleep(10)
 
     if iot_is_used:
         registered = False
@@ -268,7 +261,6 @@ if __name__ == "__main__":
                 print(f"iteration number {i}")
                 main()
                 data_frame = sensor_data.sensor_data
-                data_frame['chrg_cycle'] = chrg_cycle
                 data_frame_json = data_frame   # json.dumps(sensor_data.sensor_data, indent=4) 
                 print(f"sensor_data is:\n {data_frame_json}")
                 node.mqtt_publish(data=data_frame_json)
@@ -282,49 +274,41 @@ if __name__ == "__main__":
         client.connect(client.broker_address, client.port, client.keepAlive)
         client.subscribe(client.topic)
         print(f"The subscriber just subscribed to topic {client.topic}")
-        if client.client_type == 'subscriber':
-            client.loop_start()
-            # print("The loop is just started >>>>>")
-            while not connected:
-                time.sleep(0.2)
-            while not MessageReceived:
-                time.sleep(0.2)
-            client.loop_stop()
 
-        else:
+        for chrg_cycls in range(1):
+            sensor_data.battery_update_values()
+            if (sensor_data.sensor_data['batt_lvl'] > sensor_data.upper_threshold) and (sensor_data.charge_status == 'PRESENT'):
+                sensor_data.turn_switch_off()
+                while sensor_data.charge_status == 'PRESENT':
+                    sleep(5)
+                    sensor_data.battery_update_values()
+                    print("waiting for the charger to be disconnected")
 
-            for chrg_cycle in range(1):
-        
-                sensor_data.battery_update_values()
-                if (sensor_data.sensor_data['batt_lvl'] > sensor_data.upper_threshold) and (sensor_data.charge_status == 'PRESENT'):
-                    r = requests.post(url_turn_off, data=pload)
-                    while sensor_data.charge_status == 'PRESENT':
-                        time.sleep(5)
+
+                print(f"A new charging cycle is just started: {chrg_cycls+1}")
+                # then reset the cycle
+
+                while (sensor_data.sensor_data['batt_lvl'] > sensor_data.lower_threshold) and (sensor_data.charge_status == 'NOT_PRESENT'):     # i <= no_of_iter
+                    print(f"cycle number {chrg_cycls+1} and iteration number {i}")
+                    main()
+                    data_frame = sensor_data.sensor_data
+                    data_frame['chrg_cycls'] = chrg_cycls+1
+                    data_frame_json = json.dumps(data_frame, indent=4)
+                    client.publish(client.topic, data_frame_json)
+                    client.on_publish_message(data_frame_json)
+                    sleep(10)
+                    i += 1
+                
+                if (sensor_data.sensor_data['batt_lvl'] < sensor_data.lower_threshold) and (sensor_data.charge_status == 'NOT_PRESENT'):
+                    print(f"The charging cycle number {chrg_cycls+1} is just ended")
+                    sensor_data.turn_switch_on()
+                    sleep(10)
+
+                    while not (sensor_data.sensor_data['batt_lvl'] > sensor_data.upper_threshold):
+                        sleep(5)
                         sensor_data.battery_update_values()
-                        print("waiting for the charger to be disconnected")
-
-                    print(f"A new charging cycle is just started: {chrg_cycle+1}")
-                    # # add new column for the cycle - called chrg_cycle - 
-                    # then reset the cycle
-
-                    while (sensor_data.sensor_data['batt_lvl'] > sensor_data.lower_threshold) and (sensor_data.charge_status == 'NOT_PRESENT'):     # i <= no_of_iter
-                        print(f"iteration number {i}")
-                        main()
-                        data_frame = sensor_data.sensor_data
-                        data_frame['chrg_cycle'] = chrg_cycle+1
-                        data_frame_json = json.dumps(data_frame, indent=4)
-                        client.publish(client.topic, data_frame_json)
-                        # client.publish(topic,json.loads(str(row)))
-                        client.on_publish_message(data_frame_json)
-                        time.sleep(10)
-                        i += 1
+                        print("waiting for the charger to fully charge the battery")
                     
-                    if (sensor_data.sensor_data['batt_lvl'] < sensor_data.lower_threshold) and (sensor_data.charge_status == 'NOT_PRESENT'):
-                            r = requests.post(url_turn_on, data=pload)
-                            time.sleep(20)
-                            print(f"The charging cycle number {chrg_cycle+1} is just ended")
-                            # break
-                        
 
                 
 
