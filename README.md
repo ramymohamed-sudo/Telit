@@ -227,4 +227,3 @@ sensor_data.battery_update_values()
 print(sensor_data.sensor_data['batt_lvl'])
 
 
-

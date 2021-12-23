@@ -78,8 +78,10 @@ class SensorData():
         self.sensor_data['ram_util'] = round(int(self.getRAMinfo()[1]) / 1000,1)  # ram_utliz
         self.sensor_data['disk_perc'] = float(self.getDiskSpace()[3].replace("%", ""))     # disk_percnt    # getDiskSpace()[3]
         # WiFi_ssd = str(subprocess.check_output('iwgetid', shell=True))
+        # if search(r'(HUAWEI|IBM)', WiFi_ssd):
+        #     self.sensor_data['wifi'] = True
         WiFi_ssd = str(subprocess.check_output('ip a show wlan0 up', shell=True))
-        if search(r'(HUAWEI|IBM)', WiFi_ssd):
+        if search(r'(192.168.8)', WiFi_ssd):
             self.sensor_data['wifi'] = True
         else:
             self.sensor_data['wifi'] = False
@@ -136,7 +138,7 @@ class SensorData():
             if self.sensor_data['batt_lvl'] > self.upper_threshold:
                 self.SENSOR_READY = True
             else:
-                print("wait for the sensor charges till exceeds upper_threshold")
+                print("wait for the sensor charges till exceeds upper_threshold >>>>>>>>>>>>>>>>>>> ")
         elif self.charge_status == 'NOT_PRESENT':
             self.turn_switch_on()
             print("now the charger is back connected")

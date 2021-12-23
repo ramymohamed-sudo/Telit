@@ -230,10 +230,6 @@ if iot_is_used:
 if __name__ == "__main__":
     sensor_data = processor.SensorData(name)
 
-    while sensor_data.SENSOR_READY == False:
-        sensor_data.prepare_for_data_collect()
-        sleep(10)
-
     if iot_is_used:
         registered = False
         no_of_reg_loops = 50    # 50
@@ -276,6 +272,12 @@ if __name__ == "__main__":
         print(f"The subscriber just subscribed to topic {client.topic}")
 
         for chrg_cycls in range(2):
+            print(f"chrg_cycls index: {chrg_cycls}")
+
+            while sensor_data.SENSOR_READY == False:
+                sensor_data.prepare_for_data_collect()
+                sleep(10)
+
             sensor_data.battery_update_values()
             if (sensor_data.sensor_data['batt_lvl'] > sensor_data.upper_threshold) and (sensor_data.charge_status == 'PRESENT'):
                 sensor_data.turn_switch_off()
