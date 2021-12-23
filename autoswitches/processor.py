@@ -38,7 +38,7 @@ class SensorData():
         self.sensor_data['name'] = name
         self.pijuice = PiJuice(1, 0x14)
         self.model= model
-        self.lower_threshold = 90.0
+        self.lower_threshold = 93.0
         self.upper_threshold = 80.0
 
         self.sensor_id = [int(s) for s in name.split('-') if s.isdigit()][0]
