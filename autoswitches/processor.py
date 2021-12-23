@@ -102,7 +102,6 @@ class SensorData():
             self.sensor_data['batt_mv'] = self.pijuice.status.GetBatteryVoltage()['data']
             self.sensor_data['batt_tmp'] = self.pijuice.status.GetBatteryTemperature()['data']
             crt_millis = int(round(time.time() * 1000))
-            self.start_cycle_timestamp()
             self.sensor_data['hrs_since_ful_chrg'] = self.ms_to_minutes_Hrs(crt_millis)
             self.sensor_data['chrg_cycls'] = '1'
 

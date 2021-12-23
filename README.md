@@ -226,16 +226,5 @@ sensor_data = processor.SensorData(name)
 sensor_data.battery_update_values()
 print(sensor_data.sensor_data['batt_lvl'])
 
-# 192.168.8.107 for c2-03
-
-status = pijuice.status.GetStatus()
-key, value = next(iter(status.items()))
-batt_lvl = pijuice.status.GetChargeLevel()['data']
-
-self.sensor_data['batt_mv'] = pijuice.status.GetBatteryVoltage()['data']
-sensor_data['batt_tmp'] = pijuice.status.GetBatteryTemperature()['data']
-crt_millis = int(round(time.time() * 1000))
-sensor_data['hrs_since_ful_chrg'] = ms_to_minutes_Hrs(crt_millis)
-sensor_data['chrg_cycls'] = '1'
 
 
