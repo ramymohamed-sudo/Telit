@@ -38,8 +38,8 @@ class SensorData():
         self.sensor_data['name'] = name
         self.pijuice = PiJuice(1, 0x14)
         self.model= model
-        self.lower_threshold = 74.0
-        self.upper_threshold = 77.0
+        self.lower_threshold = 90.0
+        self.upper_threshold = 80.0
 
         self.sensor_id = [int(s) for s in name.split('-') if s.isdigit()][0]
         self.SENSOR_READY = False
@@ -73,7 +73,7 @@ class SensorData():
     # """ features such as no of running processes/ # Telit or BG96 """
     def cpu_temp_process_ram_utilization(self):
         self.sensor_data['cpu_temp'] = float(self.getCPUtemperature())   # cpu_temp
-        self.sensor_data['cpu_util'] = float(self.getCPUuse())   # cpu_utliz
+        self.sensor_data['cpu_util'] = self.getCPUuse()   # cpu_utliz
         self.sensor_data['ram_util'] = round(int(self.getRAMinfo()[1]) / 1000,1)  # ram_utliz
         self.sensor_data['disk_perc'] = float(self.getDiskSpace()[3].replace("%", ""))     # disk_percnt    # getDiskSpace()[3]
         # WiFi_ssd = str(subprocess.check_output('iwgetid', shell=True))
