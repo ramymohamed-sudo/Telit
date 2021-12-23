@@ -129,6 +129,7 @@ class SensorData():
             print(f"There is error related to battery:\n {key}")
     
     def prepare_for_data_collect(self):
+        self.start_cycle_timestamp()
         self.battery_update_values()
         if self.charge_status == 'PRESENT':
             if self.sensor_data['batt_lvl'] > self.upper_threshold:
