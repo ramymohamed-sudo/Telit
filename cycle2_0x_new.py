@@ -275,7 +275,7 @@ if __name__ == "__main__":
         client.subscribe(client.topic)
         print(f"The subscriber just subscribed to topic {client.topic}")
 
-        for chrg_cycls in range(1):
+        for chrg_cycls in range(2):
             sensor_data.battery_update_values()
             if (sensor_data.sensor_data['batt_lvl'] > sensor_data.upper_threshold) and (sensor_data.charge_status == 'PRESENT'):
                 sensor_data.turn_switch_off()
