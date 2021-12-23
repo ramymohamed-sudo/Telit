@@ -141,7 +141,6 @@ class SensorData():
             self.turn_switch_on()
             print("now the charger is back connected")
 
-        print("Wiating for the sensor to be ready ......")
         print(f"Battery level now is {self.sensor_data['batt_lvl']} and charging status is {self.charge_status}")
         # if self.sensor_data['batt_lvl'] > self.lower_threshold:
         # return self.SENSOR_READY
