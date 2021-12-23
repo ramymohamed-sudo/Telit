@@ -139,6 +139,7 @@ class SensorData():
                 # leave the sensor charges till exceeds upper_threshold
         elif self.charge_status == 'NOT_PRESENT':
             self.turn_switch_on()
+            print("now the charger is back connected")
         else:
             print("Wiating for the sensor to be ready ......")
         print(f"Battery level now is {self.sensor_data['batt_lvl']} and charging status is {self.charge_status}")
