@@ -38,8 +38,8 @@ class SensorData():
         self.sensor_data['name'] = name
         self.pijuice = PiJuice(1, 0x14)
         self.model= model
-        self.upper_threshold = 90.0
-        self.lower_threshold = 10.0
+        self.upper_threshold = 98.0
+        self.lower_threshold = 10.0     # check the lowest minimum
         
 
         self.sensor_id = [int(s) for s in name.split('-') if s.isdigit()][0]
@@ -110,8 +110,9 @@ class SensorData():
 
         """ Battery methods to enable/disable charging """
         # self.pijuice.status.GetStatus()
-        self.charge_status_ = self.pijuice.status.GetStatus()['data']['powerInput']
-        self.charge_status_5VIO = self.pijuice.status.GetStatus()['data']['powerInput5vIo']
+        pijuice_status_GetStatus_data = self.pijuice.status.GetStatus()['data']
+        self.charge_status_ = pijuice_status_GetStatus_data['powerInput']
+        self.charge_status_5VIO = pijuice_status_GetStatus_data['powerInput5vIo']
             
         if (self.charge_status_ != 'PRESENT') and (self.charge_status_5VIO != 'PRESENT'):
             self.charge_status = 'NOT_PRESENT'
@@ -135,7 +136,7 @@ class SensorData():
         self.start_cycle_timestamp()
         self.battery_update_values()
         if self.charge_status == 'PRESENT':
-            if self.sensor_data['batt_lvl'] > self.upper_threshold:
+            if self.sensor_data['batt_lvl'] >= self.upper_threshold:
                 self.SENSOR_READY = True
             else:
                 print("wait for the sensor charges till exceeds upper_threshold >>>>>>>>>>>>>>>>>>> ")
