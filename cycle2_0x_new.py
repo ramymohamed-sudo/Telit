@@ -207,7 +207,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         self.sendATComm("AT#MQSUB=1,\"5G-Solutions\"","OK")
 
 def main():
-    # initialize_sensor_data()
+    sensor_data.reset_sensor_data()
     sensor_data.timestamp()
     sensor_data.update_Telit_values()
     sensor_data.cpu_temp_process_ram_utilization()
@@ -290,7 +290,7 @@ if __name__ == "__main__":
                 sensor_data.start_cycle_timestamp()
                 # then reset the cycle
 
-                while (sensor_data.sensor_data['batt_lvl'] > sensor_data.lower_threshold) and (sensor_data.charge_status == 'NOT_PRESENT'):     # i <= no_of_iter
+                while (sensor_data.sensor_data['batt_lvl'] > sensor_data.lower_threshold) and (sensor_data.charge_status != 'PRESENT'):     # i <= no_of_iter
                     print(f"cycle number {chrg_cycls+1} and iteration number {i}")
                     main()
                     data_frame = sensor_data.sensor_data
@@ -301,13 +301,13 @@ if __name__ == "__main__":
                     sleep(10)
                     i += 1
                 
-                if (sensor_data.sensor_data['batt_lvl'] < sensor_data.lower_threshold) and (sensor_data.charge_status == 'NOT_PRESENT'):
+                if (sensor_data.sensor_data['batt_lvl'] < sensor_data.lower_threshold) and (sensor_data.charge_status != 'PRESENT'):
                     print(f"The charging cycle number {chrg_cycls+1} is just ended")
                     sensor_data.turn_switch_on()
                     sleep(10)
 
                     while not (sensor_data.sensor_data['batt_lvl'] > sensor_data.upper_threshold):
-                        sleep(5)
+                        sleep(10)
                         sensor_data.battery_update_values()
                         print("waiting for the charger to fully charge the battery")
                     

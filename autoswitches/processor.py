@@ -38,16 +38,18 @@ class SensorData():
         self.sensor_data['name'] = name
         self.pijuice = PiJuice(1, 0x14)
         self.model= model
-        self.upper_threshold = 98.0
-        self.lower_threshold = 10.0     # check the lowest minimum
+        self.upper_threshold = 90.0
+        self.lower_threshold = 80.0     # check the lowest minimum
         
-
         self.sensor_id = [int(s) for s in name.split('-') if s.isdigit()][0]
         self.SENSOR_READY = False
         self.urls_turn_on = [eval(f"url{i}_turn_on") for i in range(3, 11)]
         self.urls_turn_off = [eval(f"url{i}_turn_off") for i in range(3, 11)]
         self.url_turn_on = [eval(f"url{i}_turn_on") for i in range(3, 11)][self.sensor_id-3]
         self.url_turn_off = [eval(f"url{i}_turn_off") for i in range(3, 11)][self.sensor_id-3]
+    
+    def reset_sensor_data():
+        self.sensor_data = dict()
     
     def turn_switch_on(self):
         r = requests.post(self.url_turn_on, data=pload)
@@ -100,28 +102,37 @@ class SensorData():
     def battery_update_values(self):
         status = self.pijuice.status.GetStatus()
         key, value = next(iter(status.items()))
-        # try:
-        self.sensor_data['batt_lvl'] = self.pijuice.status.GetChargeLevel()['data']
-        self.sensor_data['batt_mv'] = self.pijuice.status.GetBatteryVoltage()['data']
-        self.sensor_data['batt_tmp'] = self.pijuice.status.GetBatteryTemperature()['data']
+        
+        pijuice_status = self.pijuice.status        # try/except - make it null in the except 
+        try:
+            self.sensor_data['batt_lvl'] = pijuice_status.GetChargeLevel()['data']
+            self.sensor_data['batt_mv'] = pijuice_status.status.GetBatteryVoltage()['data']
+            self.sensor_data['batt_tmp'] = pijuice_status.status.GetBatteryTemperature()['data']
+        except:
+            None
+
+        
         crt_millis = int(round(time.time() * 1000))
         self.sensor_data['hrs_since_ful_chrg'] = self.ms_to_minutes_Hrs(crt_millis)
         self.sensor_data['chrg_cycls'] = '1'
 
         """ Battery methods to enable/disable charging """
         # self.pijuice.status.GetStatus()
-        pijuice_status_GetStatus_data = self.pijuice.status.GetStatus()['data']
-        self.charge_status_ = pijuice_status_GetStatus_data['powerInput']
-        self.charge_status_5VIO = pijuice_status_GetStatus_data['powerInput5vIo']
+        try:
+            pijuice_status_GetStatus_data = self.pijuice.status.GetStatus()['data']
+            self.charge_status_ = pijuice_status_GetStatus_data['powerInput']
+            self.charge_status_5VIO = pijuice_status_GetStatus_data['powerInput5vIo']
             
-        if (self.charge_status_ != 'PRESENT') and (self.charge_status_5VIO != 'PRESENT'):
-            self.charge_status = 'NOT_PRESENT'
-            
-        elif (self.charge_status_ == 'PRESENT') or (self.charge_status_5VIO == 'PRESENT'):
-            self.charge_status = 'PRESENT'
-            
-        self.sensor_data['chrg_status'] = self.charge_status
-            
+            if (self.charge_status_ != 'PRESENT') and (self.charge_status_5VIO != 'PRESENT'):
+                self.charge_status = 'NOT_PRESENT'
+            elif (self.charge_status_ == 'PRESENT') or (self.charge_status_5VIO == 'PRESENT'):
+                self.charge_status = 'PRESENT'
+                
+            self.sensor_data['chrg_status'] = self.charge_status
+        except:
+            self.charge_status = 'UNKNOWN'
+            self.sensor_data['chrg_status'] = 'UNKNOWN'
+
         # {'data': {'isFault': True, 'isButton': False, 'battery': 'NORMAL', 
         # 'powerInput': 'NOT_PRESENT', 'powerInput5vIo': 'NOT_PRESENT'}, 'error': 'NO_ERROR'}
 

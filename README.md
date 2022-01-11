@@ -113,6 +113,7 @@ nohup python web_flask.py > switch.log &
 nohup python web_flask_new.py > switch.log &
 <br />
 nohup python cycle2_0x.py > sensor.log &
+rm sensor.log
 nohup python cycle2_0x_new.py > sensor.log &
 
 
@@ -133,6 +134,8 @@ sudo systemd-escape stop serial­-getty@ttyUSB2.service
  1224  cd 
  1225  ls
  1226  clear
+
+ 
  1227  ls
  1228  vim ppp_install_standalone.sh 
  1229  sudo pon

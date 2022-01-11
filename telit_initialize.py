@@ -27,7 +27,7 @@ node.sendATComm("AT+CEREG=2","OK")
 node.sendATComm("AT+CEREG=2,2,\"0001\",\"01\",9","OK")      # gives error 
 
 # Read command returns the current value of <mode>
-node.sendATComm("AT+CEREG?","OK")   # 2, 2
+node.sendATComm("AT+CEREG?","OK")   # 2, 2                          2022:   2,0
 
 
 # returns current service (Amarisoft Base Station if connected)
