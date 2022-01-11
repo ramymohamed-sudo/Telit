@@ -48,7 +48,7 @@ class SensorData():
         self.url_turn_on = [eval(f"url{i}_turn_on") for i in range(3, 11)][self.sensor_id-3]
         self.url_turn_off = [eval(f"url{i}_turn_off") for i in range(3, 11)][self.sensor_id-3]
     
-    def reset_sensor_data():
+    def reset_sensor_data(self):
         self.sensor_data = dict()
     
     def turn_switch_on(self):
