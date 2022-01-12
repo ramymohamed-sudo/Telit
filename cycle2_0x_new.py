@@ -273,6 +273,7 @@ if __name__ == "__main__":
 
         for chrg_cycls in range(4):
             print(f"chrg_cycls: {chrg_cycls+1}")
+            print("sensor_data.SENSOR_READY before", sensor_data.SENSOR_READY)
 
             while sensor_data.SENSOR_READY == False:
                 sensor_data.prepare_for_data_collect()
@@ -284,6 +285,7 @@ if __name__ == "__main__":
                 while sensor_data.charge_status == 'PRESENT':
                     sleep(5)
                     sensor_data.battery_update_values()
+                    
                     print("waiting for the charger to be disconnected")
 
                 print(f"A new charging cycle is just started: {chrg_cycls+1}")
@@ -303,6 +305,7 @@ if __name__ == "__main__":
                 if (sensor_data.sensor_data['batt_lvl'] <= sensor_data.lower_threshold) and (sensor_data.charge_status != 'PRESENT'):
                     print(f"The charging cycle number {chrg_cycls+1} is just ended")
                     sensor_data.SENSOR_READY == False
+                    print("sensor_data.SENSOR_READY after", sensor_data.SENSOR_READY)
                     sleep(10)
                 else:
                     print("The loop cycle no. {chrg_cycls+1} did not complete!!!")
