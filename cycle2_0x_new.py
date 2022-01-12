@@ -24,11 +24,13 @@ import requests
 from re import search
 import itertools
 import string
+import pprint
 from collections import defaultdict
 
 
 connected = False
 MessageReceived = False
+kpiVsUrl = '9.162.161.90:4000/'
 
 
 class WifiMqtt(mqtt.Client):
@@ -297,6 +299,11 @@ if __name__ == "__main__":
                     data_frame['chrg_cycls'] = chrg_cycls+1
                     data_frame_json = json.dumps(data_frame, indent=4)
                     client.publish(client.topic, data_frame_json)
+                    r = requests.post(kpiVsUrl+str(sensor_data.sensor_id),
+                                      json=data_frame_json,
+                                      headers={'Authorization': ''})       
+                    pprint.pprint(r.json())
+                    
                     client.on_publish_message(data_frame_json)
                     sleep(10)
                     i += 1
