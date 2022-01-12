@@ -272,14 +272,14 @@ if __name__ == "__main__":
         print(f"The subscriber just subscribed to topic {client.topic}")
 
         for chrg_cycls in range(4):
-            print(f"chrg_cycls index: {chrg_cycls}")
+            print(f"chrg_cycls: {chrg_cycls+1}")
 
             while sensor_data.SENSOR_READY == False:
                 sensor_data.prepare_for_data_collect()
                 sleep(10)
-
             sensor_data.battery_update_values()
-            if (sensor_data.sensor_data['batt_lvl'] > sensor_data.upper_threshold) and (sensor_data.charge_status == 'PRESENT'):
+
+            if (sensor_data.sensor_data['batt_lvl'] >= sensor_data.upper_threshold) and (sensor_data.charge_status == 'PRESENT'):
                 sensor_data.turn_switch_off()
                 while sensor_data.charge_status == 'PRESENT':
                     sleep(5)
@@ -288,9 +288,8 @@ if __name__ == "__main__":
 
                 print(f"A new charging cycle is just started: {chrg_cycls+1}")
                 sensor_data.start_cycle_timestamp()
-                # then reset the cycle
 
-                while (sensor_data.sensor_data['batt_lvl'] > sensor_data.lower_threshold) and (sensor_data.charge_status != 'PRESENT'):     # i <= no_of_iter
+                while (sensor_data.sensor_data['batt_lvl'] >= sensor_data.lower_threshold) and (sensor_data.charge_status != 'PRESENT'):     # i <= no_of_iter
                     print(f"cycle number {chrg_cycls+1} and iteration number {i}")
                     main()
                     data_frame = sensor_data.sensor_data
@@ -303,13 +302,12 @@ if __name__ == "__main__":
                 
                 if (sensor_data.sensor_data['batt_lvl'] <= sensor_data.lower_threshold) and (sensor_data.charge_status != 'PRESENT'):
                     print(f"The charging cycle number {chrg_cycls+1} is just ended")
-                    sensor_data.turn_switch_on()
+                    sensor_data.SENSOR_READY == False
                     sleep(10)
+                else:
+                    print("The loop cycle no. {chrg_cycls+1} did not complete!!!")
+                    sys.exit()
 
-                    while not (sensor_data.sensor_data['batt_lvl'] > sensor_data.upper_threshold):
-                        sleep(10)
-                        sensor_data.battery_update_values()
-                        print("waiting for the charger to fully charge the battery")
                     
 
                 
