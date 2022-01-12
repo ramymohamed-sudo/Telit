@@ -301,7 +301,7 @@ if __name__ == "__main__":
                     sleep(10)
                     i += 1
                 
-                if (sensor_data.sensor_data['batt_lvl'] < sensor_data.lower_threshold) and (sensor_data.charge_status != 'PRESENT'):
+                if (sensor_data.sensor_data['batt_lvl'] <= sensor_data.lower_threshold) and (sensor_data.charge_status != 'PRESENT'):
                     print(f"The charging cycle number {chrg_cycls+1} is just ended")
                     sensor_data.turn_switch_on()
                     sleep(10)
