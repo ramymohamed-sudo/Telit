@@ -271,7 +271,7 @@ if __name__ == "__main__":
         client.subscribe(client.topic)
         print(f"The subscriber just subscribed to topic {client.topic}")
 
-        for chrg_cycls in range(2):
+        for chrg_cycls in range(4):
             print(f"chrg_cycls index: {chrg_cycls}")
 
             while sensor_data.SENSOR_READY == False:
