@@ -209,7 +209,7 @@ class IoTMqtt(IoTSixfabTelit.IoT):
         self.sendATComm("AT#MQSUB=1,\"5G-Solutions\"","OK")
 
 def main():
-    sensor_data.reset_sensor_data()
+    # sensor_data.reset_sensor_data()
     sensor_data.timestamp()
     sensor_data.update_Telit_values()
     sensor_data.cpu_temp_process_ram_utilization()
