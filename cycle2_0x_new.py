@@ -307,7 +307,7 @@ if __name__ == "__main__":
                     r = requests.post(kpiVsUrl,
                                       json=data_frame,
                                       headers={'Authorization': ''})       
-                    pprint.pprint(r.json())
+                    pprint.pprint(r)
                     
                     client.on_publish_message(data_frame_json)
                     sleep(10)
