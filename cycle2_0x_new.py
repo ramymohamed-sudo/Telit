@@ -219,6 +219,7 @@ def main():
 iot_is_used = False
 node = IoTMqtt()
 node.setupGPIO()
+no_of_cycles = 4
 no_of_iter = 3
 i = 1
 name = socket.gethostname()
@@ -273,8 +274,8 @@ if __name__ == "__main__":
         client.subscribe(client.topic)
         print(f"The subscriber just subscribed to topic {client.topic}")
 
-        for chrg_cycls in range(4):
-            print(f"chrg_cycls: {chrg_cycls+1}")
+        for chrg_cycle in range(no_of_cycles+1):
+            print(f"chrg_cycle: {chrg_cycle+1}")
 
             while sensor_data.SENSOR_READY == False:
                 sensor_data.prepare_for_data_collect()
@@ -282,21 +283,25 @@ if __name__ == "__main__":
             sensor_data.battery_update_values()
 
             if (sensor_data.sensor_data['batt_lvl'] >= sensor_data.upper_threshold) and (sensor_data.charge_status == 'PRESENT'):
-                sensor_data.turn_switch_off()
-                while sensor_data.charge_status == 'PRESENT':
-                    sleep(5)
-                    sensor_data.battery_update_values()
-                    
-                    print("waiting for the charger to be disconnected")
+                
+                if chrg_cycle < no_of_cycles:
+                    sensor_data.turn_switch_off()
+                    while sensor_data.charge_status == 'PRESENT':
+                        sleep(5)
+                        sensor_data.battery_update_values()
+                        print("waiting for the charger to be disconnected")
 
-                print(f"A new charging cycle is just started: {chrg_cycls+1}")
-                sensor_data.start_cycle_timestamp()
+                    print(f"A new charging cycle is just started: {chrg_cycle+1}")
+                    sensor_data.start_cycle_timestamp()
+                else:
+                    print("The total number of cycles are completed!!!")
+                    sys.exit()
 
                 while (sensor_data.sensor_data['batt_lvl'] >= sensor_data.lower_threshold) and (sensor_data.charge_status != 'PRESENT'):     # i <= no_of_iter
-                    print(f"cycle number {chrg_cycls+1} and iteration number {i}")
+                    print(f"cycle number {chrg_cycle+1} and iteration number {i}")
                     main()
                     data_frame = sensor_data.sensor_data
-                    data_frame['chrg_cycls'] = chrg_cycls+1
+                    data_frame['chrg_cycle'] = chrg_cycle+1
                     data_frame_json = json.dumps(data_frame, indent=4)
                     client.publish(client.topic, data_frame_json)
                     r = requests.post(kpiVsUrl+str(sensor_data.sensor_id),
@@ -309,12 +314,12 @@ if __name__ == "__main__":
                     i += 1
                 
                 if (sensor_data.sensor_data['batt_lvl'] <= sensor_data.lower_threshold) and (sensor_data.charge_status != 'PRESENT'):
-                    print(f"The charging cycle number {chrg_cycls+1} is just ended")
+                    print(f"The charging cycle number {chrg_cycle+1} is just ended")
                     sensor_data.SENSOR_READY = False
                     print("sensor_data.SENSOR_READY becomes: ", sensor_data.SENSOR_READY)
                     sleep(10)
                 else:
-                    print("The loop cycle no. {chrg_cycls+1} did not complete!!!")
+                    print("The loop cycle no. {chrg_cycle+1} did not complete!!!")
                     sys.exit()
 
                     
