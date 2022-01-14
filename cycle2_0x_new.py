@@ -304,15 +304,17 @@ if __name__ == "__main__":
                     data_frame['chrg_cycle'] = chrg_cycle+1
                     data_frame_json = json.dumps(data_frame, indent=4)
                     client.publish(client.topic, data_frame_json)
+                    client.on_publish_message(data_frame_json)
                     try: 
                         r = requests.post(kpiVsUrl,
                                         json=data_frame,
                                         headers={'Authorization': ''})       
                         pprint.pprint(r)
-                    except ConnectionRefusedError:
+                    except requests.ConnectionRefusedError:
+                        print("The connection to the fronend app.js is broken")
+                    except requests.NewConnectionError:
                         print("Unable to connect to the fronend app.js")
                     
-                    client.on_publish_message(data_frame_json)
                     sleep(10)
                     i += 1
                 
