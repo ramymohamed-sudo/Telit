@@ -30,7 +30,7 @@ from collections import defaultdict
 
 connected = False
 MessageReceived = False
-kpiVsUrl = 'http://9.162.161.90:4000/sensor'
+kpiVsUrl = 'http://9.162.161.90:4004/sensor'
 
 
 class WifiMqtt(mqtt.Client):
@@ -304,10 +304,13 @@ if __name__ == "__main__":
                     data_frame['chrg_cycle'] = chrg_cycle+1
                     data_frame_json = json.dumps(data_frame, indent=4)
                     client.publish(client.topic, data_frame_json)
-                    r = requests.post(kpiVsUrl,
-                                      json=data_frame,
-                                      headers={'Authorization': ''})       
-                    pprint.pprint(r)
+                    try: 
+                        r = requests.post(kpiVsUrl,
+                                        json=data_frame,
+                                        headers={'Authorization': ''})       
+                        pprint.pprint(r)
+                    except ConnectionRefusedError:
+                        print("Unable to connect to the fronend app.js")
                     
                     client.on_publish_message(data_frame_json)
                     sleep(10)
