@@ -310,10 +310,8 @@ if __name__ == "__main__":
                                         json=data_frame,
                                         headers={'Authorization': ''})       
                         pprint.pprint(r)
-                    except requests.ConnectionRefusedError:
-                        print("The connection to the fronend app.js is broken")
-                    except requests.NewConnectionError:
-                        print("Unable to connect to the fronend app.js")
+                    except:
+                        print("The connection to the fronend app.js is broken/not started")
                     
                     sleep(10)
                     i += 1
