@@ -30,7 +30,8 @@ from collections import defaultdict
 
 connected = False
 MessageReceived = False
-kpiVsUrl = 'http://9.162.161.90:4004/sensor'
+# kpiVsUrl = 'http://9.162.161.90:4004/sensor'
+kpiVsUrl = 'http://9.162.161.90:31200/sensor'
 
 
 class WifiMqtt(mqtt.Client):
