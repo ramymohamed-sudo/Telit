@@ -116,6 +116,8 @@ nohup python cycle2_0x.py > sensor.log &
 rm sensor.log
 nohup python cycle2_0x_new.py > sensor.log &
 
+rm sensor.log
+nohup python -u cycle2_0x_new.py_2022 > sensor.log &
 
 https://iotbytes.wordpress.com/usb-analog-modem-with-raspberry-pi/
 https://docs.sixfab.com/page/setting-up-the-ppp-connection-for-sixfab-shield-hat

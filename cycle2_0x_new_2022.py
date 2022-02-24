@@ -220,7 +220,7 @@ def main():
 iot_is_used = False
 node = IoTMqtt()
 node.setupGPIO()
-no_of_cycles = 4
+no_of_cycles = 40
 no_of_iter = 3
 i = 1
 name = socket.gethostname()
@@ -298,7 +298,7 @@ if __name__ == "__main__":
                 client.connect(client.broker_address, client.port, client.keepAlive)
                 client.subscribe(client.topic)
                 print(f"The subscriber just subscribed to topic {client.topic}")
-                while (sensor_data.sensor_data['batt_lvl'] >= sensor_data.lower_threshold) and (sensor_data.charge_status != 'PRESENT'):     # i <= no_of_iter
+                while (sensor_data.sensor_data['batt_lvl'] >= sensor_data.lower_threshold) and (sensor_data.charge_status != 'PRESENT'):  
                     print(f"cycle number {chrg_cycle+1} and iteration number {i}")
                     main()
                     data_frame = sensor_data.sensor_data
